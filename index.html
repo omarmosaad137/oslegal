@@ -1,0 +1,2229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>OS Legal — UAE Firm Management CRM</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css"/>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Sans:wght@300;400;500;600&display=swap');
+
+  :root {
+    --bg: #fafaf8;
+    --bg2: #f4f3ef;
+    --bg3: #eeecea;
+    --surface: #ffffff;
+    --border: rgba(0,0,0,0.10);
+    --border2: rgba(0,0,0,0.18);
+    --text: #1a1a18;
+    --text2: #5a5a56;
+    --text3: #9a9a94;
+    --accent: #1a1a18;
+    --accent-bg: #1a1a18;
+    --accent-text: #fafaf8;
+    --info-bg: #e8f0fb;
+    --info-text: #1a4a8a;
+    --success-bg: #e4f2e8;
+    --success-text: #1a6b35;
+    --warn-bg: #fdf3e3;
+    --warn-text: #8a5a00;
+    --danger-bg: #fde8e8;
+    --danger-text: #8a1a1a;
+    --purple-bg: #f0eafd;
+    --purple-text: #5b2f91;
+    --rad: 8px;
+    --rad-lg: 12px;
+    --sidebar-w: 232px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); font-size: 14px; }
+  h1,h2,h3 { font-weight: 500; }
+  button, input, select, textarea { font-family: inherit; }
+  .app { display: flex; height: 100vh; overflow: hidden; }
+
+  .sidebar {
+    width: var(--sidebar-w); background: var(--surface); border-right: 0.5px solid var(--border);
+    display: flex; flex-direction: column; flex-shrink: 0; overflow-y: auto;
+  }
+  .sidebar-logo {
+    padding: 1.25rem 1.25rem 1rem;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 18px; font-weight: 400; letter-spacing: 0.06em;
+    border-bottom: 0.5px solid var(--border); color: var(--text);
+  }
+  .sidebar-logo span { font-weight: 300; color: var(--text2); }
+  .sidebar-section { padding: 1rem 0.75rem 0.5rem; font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text3); font-weight: 500; }
+  .nav-item {
+    display: flex; align-items: center; gap: 9px; padding: 8px 1rem;
+    font-size: 13px; color: var(--text2); cursor: pointer; border-radius: var(--rad);
+    margin: 1px 6px; transition: all 0.15s; user-select: none;
+  }
+  .nav-item:hover { background: var(--bg2); color: var(--text); }
+  .nav-item.active { background: var(--accent-bg); color: var(--accent-text); }
+  .nav-item i { font-size: 16px; }
+  .nav-badge {
+    margin-left: auto; background: var(--danger-bg); color: var(--danger-text);
+    font-size: 10px; font-weight: 600; padding: 1px 6px; border-radius: 20px;
+  }
+  .nav-item.active .nav-badge { background: rgba(255,255,255,0.2); color: #fff; }
+
+  .main { flex: 1; overflow-y: auto; display: flex; flex-direction: column; }
+  .topbar {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 1rem; padding: 1rem 1.75rem; border-bottom: 0.5px solid var(--border);
+    background: var(--surface); position: sticky; top: 0; z-index: 5;
+  }
+  .topbar-title { font-size: 16px; font-weight: 600; }
+  .topbar-subtitle { font-size: 12px; color: var(--text3); margin-top: 2px; }
+  .topbar-actions { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 7px 14px; font-size: 13px; font-weight: 500;
+    border: 0.5px solid var(--border2); border-radius: var(--rad);
+    background: transparent; color: var(--text); cursor: pointer; transition: background 0.15s, opacity 0.15s;
+    text-decoration: none;
+  }
+  .btn:hover { background: var(--bg2); }
+  .btn-primary { background: var(--accent-bg); color: var(--accent-text); border-color: var(--accent-bg); }
+  .btn-primary:hover { opacity: 0.88; background: var(--accent-bg); }
+  .btn-danger { color: var(--danger-text); border-color: rgba(138,26,26,0.25); }
+  .btn-danger:hover { background: var(--danger-bg); }
+  .btn i { font-size: 15px; }
+
+  .content { padding: 1.75rem; flex: 1; }
+  .page { display: none; }
+  .page.active { display: block; }
+
+  .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 1.5rem; }
+  .stat-card { background: var(--bg2); border-radius: var(--rad); padding: 1rem 1.25rem; border: 0.5px solid rgba(0,0,0,0.04); }
+  .stat-label { font-size: 12px; color: var(--text2); margin-bottom: 6px; }
+  .stat-value { font-size: 25px; font-weight: 600; line-height: 1; }
+  .stat-sub { font-size: 11px; color: var(--text3); margin-top: 5px; }
+
+  .card {
+    background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--rad-lg);
+    margin-bottom: 1rem; overflow: hidden;
+  }
+  .card-header {
+    display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+    padding: 0.875rem 1.25rem; border-bottom: 0.5px solid var(--border);
+    font-size: 13px; font-weight: 600;
+  }
+  .card-body { padding: 1.25rem; }
+
+  .tbl { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .tbl th { text-align: left; font-size: 11px; font-weight: 600; color: var(--text3); letter-spacing: 0.06em; text-transform: uppercase; padding: 8px 12px; border-bottom: 0.5px solid var(--border); }
+  .tbl td { padding: 10px 12px; border-bottom: 0.5px solid var(--border); vertical-align: middle; }
+  .tbl tr:last-child td { border-bottom: none; }
+  .tbl tbody tr:hover td { background: var(--bg); cursor: pointer; }
+  .tbl .muted { color: var(--text3); font-size: 12px; }
+
+  .badge {
+    display: inline-flex; align-items: center; gap: 4px;
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 20px; white-space: nowrap;
+  }
+  .badge-info { background: var(--info-bg); color: var(--info-text); }
+  .badge-success { background: var(--success-bg); color: var(--success-text); }
+  .badge-warn { background: var(--warn-bg); color: var(--warn-text); }
+  .badge-danger { background: var(--danger-bg); color: var(--danger-text); }
+  .badge-neutral { background: var(--bg3); color: var(--text2); }
+  .badge-purple { background: var(--purple-bg); color: var(--purple-text); }
+
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .form-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+  .form-group { display: flex; flex-direction: column; gap: 5px; margin-bottom: 12px; }
+  .form-group.full { grid-column: 1 / -1; }
+  label { font-size: 12px; font-weight: 600; color: var(--text2); }
+  input, select, textarea {
+    font-size: 14px; padding: 8px 11px; border: 0.5px solid var(--border2);
+    border-radius: var(--rad); background: var(--surface); color: var(--text);
+    outline: none; transition: border 0.15s; width: 100%;
+  }
+  input:focus, select:focus, textarea:focus { border-color: var(--text2); }
+  textarea { resize: vertical; min-height: 82px; line-height: 1.5; }
+  .form-section-title { font-size: 12px; font-weight: 600; color: var(--text3); letter-spacing: 0.1em; text-transform: uppercase; margin: 1.25rem 0 0.75rem; padding-bottom: 6px; border-bottom: 0.5px solid var(--border); grid-column: 1/-1; }
+
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; }
+
+  .modal-overlay {
+    display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.35);
+    z-index: 100; align-items: center; justify-content: center; padding: 1rem;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: var(--surface); border-radius: var(--rad-lg); width: 760px; max-width: 96vw;
+    max-height: 90vh; overflow-y: auto; box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+  }
+  .modal.small { width: 520px; }
+  .modal.large { width: 960px; }
+  .modal-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1.125rem 1.5rem; border-bottom: 0.5px solid var(--border); font-size: 15px; font-weight: 600;
+  }
+  .modal-body { padding: 1.5rem; }
+  .modal-footer { padding: 1rem 1.5rem; border-top: 0.5px solid var(--border); display: flex; justify-content: flex-end; gap: 8px; flex-wrap: wrap; }
+  .icon-btn { background: none; border: none; cursor: pointer; color: var(--text2); font-size: 18px; padding: 2px; }
+  .icon-btn:hover { color: var(--text); }
+
+  .checklist-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 9px 0; border-bottom: 0.5px solid var(--border); font-size: 13px;
+  }
+  .checklist-item:last-child { border-bottom: none; }
+  .checklist-item input[type=checkbox], .task-check { width: 15px; height: 15px; cursor: pointer; accent-color: var(--accent-bg); flex-shrink: 0; }
+  .checklist-item.done span.doc-name, .task-item.done .task-title { text-decoration: line-through; color: var(--text3); }
+
+  .progress-bar { background: var(--bg3); border-radius: 20px; height: 6px; overflow: hidden; }
+  .progress-fill { background: var(--accent-bg); height: 100%; border-radius: 20px; transition: width 0.3s; }
+
+  .update-item { display: flex; gap: 12px; padding: 10px 0; border-bottom: 0.5px solid var(--border); }
+  .update-item:last-child { border-bottom: none; }
+  .update-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--text3); flex-shrink: 0; margin-top: 5px; }
+  .update-dot.info { background: var(--info-text); }
+  .update-dot.success { background: var(--success-text); }
+  .update-dot.warn { background: var(--warn-text); }
+  .update-dot.danger { background: var(--danger-text); }
+  .update-meta { font-size: 11px; color: var(--text3); margin-top: 3px; }
+
+  .fee-row { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 8px 0; border-bottom: 0.5px solid var(--border); font-size: 13px; }
+  .fee-row:last-child { border-bottom: none; }
+  .fee-total { display: flex; justify-content: space-between; padding: 10px 0 0; font-weight: 600; font-size: 14px; }
+
+  .task-item { display: flex; align-items: flex-start; gap: 10px; padding: 10px 0; border-bottom: 0.5px solid var(--border); }
+  .task-item:last-child { border-bottom: none; }
+  .task-info { flex: 1; }
+  .task-title { font-size: 13px; }
+  .task-meta { font-size: 11px; color: var(--text3); margin-top: 2px; display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
+
+  .empty { text-align: center; padding: 3rem 1rem; color: var(--text3); }
+  .empty i { font-size: 32px; display: block; margin-bottom: 0.75rem; }
+  .empty p { font-size: 13px; }
+
+  .tabs { display: flex; gap: 0; border-bottom: 0.5px solid var(--border); margin-bottom: 1.25rem; overflow-x: auto; }
+  .tab { padding: 9px 16px; font-size: 13px; cursor: pointer; color: var(--text2); border-bottom: 2px solid transparent; margin-bottom: -0.5px; white-space: nowrap; }
+  .tab.active { color: var(--text); border-bottom-color: var(--text); font-weight: 600; }
+
+  .matter-detail-header { margin-bottom: 1.5rem; }
+  .matter-detail-header h2 { font-family: 'Cormorant Garamond', serif; font-size: 30px; font-weight: 400; }
+  .matter-detail-header .meta { font-size: 13px; color: var(--text2); margin-top: 4px; display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+
+  .notice {
+    border-radius: var(--rad); padding: 12px; font-size: 13px; line-height: 1.55; border: 0.5px solid var(--border);
+    background: var(--bg2); color: var(--text2);
+  }
+  .notice.warn { background: var(--warn-bg); color: var(--warn-text); border-color: rgba(138,90,0,0.18); }
+  .notice.danger { background: var(--danger-bg); color: var(--danger-text); border-color: rgba(138,26,26,0.18); }
+  .notice.success { background: var(--success-bg); color: var(--success-text); border-color: rgba(26,107,53,0.18); }
+
+  .searchbar {
+    display:flex; align-items:center; gap:8px; border:0.5px solid var(--border2); border-radius:var(--rad); background:var(--surface); padding:0 10px; margin-bottom: 1rem;
+  }
+  .searchbar i { color: var(--text3); }
+  .searchbar input { border:0; padding:9px 4px; background:transparent; }
+
+  .toast {
+    position: fixed; right: 20px; bottom: 20px; z-index: 300;
+    background: var(--accent-bg); color: var(--accent-text); padding: 10px 14px; border-radius: var(--rad);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.15); font-size: 13px; display: none;
+  }
+  .toast.show { display:block; animation: fade 2.4s ease forwards; }
+  @keyframes fade { 0%{opacity:0; transform:translateY(8px)} 10%{opacity:1; transform:translateY(0)} 80%{opacity:1} 100%{opacity:0; transform:translateY(8px)} }
+
+  pre.template {
+    min-height: 340px; white-space: pre-wrap; border: 0.5px solid var(--border); border-radius: var(--rad);
+    background: var(--bg2); padding: 1rem; line-height: 1.65; font-size: 13px; color: var(--text2);
+  }
+
+  @media (max-width: 1000px) {
+    .stats-grid { grid-template-columns: 1fr 1fr; }
+    .two-col, .three-col { grid-template-columns: 1fr; }
+    .form-grid, .form-grid-3 { grid-template-columns: 1fr; }
+  }
+
+  @media (max-width: 760px) {
+    .app { display:block; height:auto; min-height:100vh; overflow:auto; }
+    .sidebar { width:100%; height:auto; flex-direction:row; overflow-x:auto; border-right:none; border-bottom:0.5px solid var(--border); }
+    .sidebar-logo, .sidebar-section, .nav-item span.label { display:none; }
+    .nav-item { flex: 0 0 auto; margin:6px 2px; padding:9px 11px; }
+    .main { overflow:visible; }
+    .content { padding:1rem; }
+    .topbar { position:relative; align-items:flex-start; flex-direction:column; padding:1rem; }
+    .stats-grid { grid-template-columns:1fr; }
+  }
+</style>
+
+<link rel="manifest" href="./manifest.webmanifest"/>
+<meta name="theme-color" content="#1a1a18"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="apple-mobile-web-app-title" content="OS Legal CRM"/>
+<link rel="apple-touch-icon" href="./icons/icon-192.png"/>
+
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="sidebar-logo">OS <span>Legal</span></div>
+    <div class="sidebar-section">Main</div>
+    <div class="nav-item active" data-page="dashboard" onclick="nav('dashboard')"><i class="ti ti-layout-dashboard"></i><span class="label">Dashboard</span></div>
+    <div class="nav-item" data-page="leads" onclick="nav('leads')"><i class="ti ti-user-plus"></i><span class="label">Leads</span><span class="nav-badge" id="leads-badge">0</span></div>
+    <div class="nav-item" data-page="matters" onclick="nav('matters')"><i class="ti ti-briefcase"></i><span class="label">Matters</span></div>
+    <div class="nav-item" data-page="tasks" onclick="nav('tasks')"><i class="ti ti-checklist"></i><span class="label">Tasks</span><span class="nav-badge" id="tasks-badge">0</span></div>
+    <div class="nav-item" data-page="calendar" onclick="nav('calendar')"><i class="ti ti-calendar-event"></i><span class="label">Calendar</span><span class="nav-badge" id="calendar-badge">0</span></div>
+    <div class="nav-item" data-page="emails" onclick="nav('emails')"><i class="ti ti-mail-forward"></i><span class="label">Email updates</span><span class="nav-badge" id="emails-badge">0</span></div>
+    <div class="sidebar-section">Finance</div>
+    <div class="nav-item" data-page="fees" onclick="nav('fees')"><i class="ti ti-receipt"></i><span class="label">Fees & Billing</span></div>
+    <div class="sidebar-section">Operations</div>
+    <div class="nav-item" data-page="documents" onclick="nav('documents')"><i class="ti ti-files"></i><span class="label">Documents</span></div>
+    <div class="nav-item" data-page="templates" onclick="nav('templates')"><i class="ti ti-template"></i><span class="label">Templates</span></div>
+    <div class="nav-item" data-page="clients" onclick="nav('clients')"><i class="ti ti-users"></i><span class="label">Clients</span></div>
+    <div class="nav-item" data-page="conflict" onclick="nav('conflict')"><i class="ti ti-shield-search"></i><span class="label">Conflict check</span></div>
+    <div class="nav-item" data-page="admin" onclick="nav('admin')"><i class="ti ti-settings"></i><span class="label">Admin</span></div>
+  </aside>
+
+  <div class="main">
+    <div class="topbar">
+      <div>
+        <div class="topbar-title" id="page-title">Dashboard</div>
+        <div class="topbar-subtitle" id="page-subtitle">OS Legal operational CRM — saved locally in this browser</div>
+      </div>
+      <div class="topbar-actions" id="topbar-actions">
+        <button class="btn btn-primary" onclick="openModal('newMatter')"><i class="ti ti-plus"></i> New matter</button>
+        <button class="btn" onclick="openModal('newLead')"><i class="ti ti-user-plus"></i> New lead</button>
+        <button class="btn" onclick="exportBackup()"><i class="ti ti-download"></i> Backup</button>
+      </div>
+    </div>
+
+    <div class="content">
+      <div class="page active" id="page-dashboard">
+        <div class="stats-grid" id="dashboard-stats"></div>
+        <div class="two-col">
+          <div>
+            <div class="card">
+              <div class="card-header">Recent active matters <button class="btn" style="font-size:12px;padding:4px 10px" onclick="nav('matters')">View all</button></div>
+              <table class="tbl">
+                <thead><tr><th>Matter</th><th>Client</th><th>Stage</th><th>Deadline</th></tr></thead>
+                <tbody id="dash-matters"></tbody>
+              </table>
+            </div>
+            <div class="card">
+              <div class="card-header">Upcoming deadlines</div>
+              <div class="card-body" id="dash-deadlines"></div>
+            </div>
+          </div>
+          <div>
+            <div class="card">
+              <div class="card-header">Recent activity</div>
+              <div class="card-body" id="dash-activity"></div>
+            </div>
+            <div class="card">
+              <div class="card-header">Pending leads</div>
+              <table class="tbl">
+                <thead><tr><th>Name</th><th>Area</th><th>Stage</th></tr></thead>
+                <tbody id="dash-leads"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="page" id="page-leads">
+        <div class="card">
+          <div class="card-header">
+            <span>Lead pipeline</span>
+            <div style="display:flex;gap:8px;flex-wrap:wrap">
+              <button class="btn" onclick="exportCsv('leads')"><i class="ti ti-table-export"></i> Export CSV</button>
+              <button class="btn btn-primary" onclick="openModal('newLead')"><i class="ti ti-plus"></i> New lead</button>
+            </div>
+          </div>
+          <div class="card-body" style="padding-bottom:0">
+            <div class="searchbar"><i class="ti ti-search"></i><input id="lead-search" oninput="renderLeads()" placeholder="Search lead, phone, opponent, practice area..."/></div>
+          </div>
+          <table class="tbl">
+            <thead><tr><th>Name</th><th>Contact</th><th>Practice area</th><th>Opponent</th><th>Stage</th><th>Follow-up</th><th></th></tr></thead>
+            <tbody id="leads-table"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="page" id="page-matters">
+        <div class="card">
+          <div class="card-header">
+            <span>All matters</span>
+            <div style="display:flex;gap:8px;flex-wrap:wrap">
+              <button class="btn" onclick="exportCsv('matters')"><i class="ti ti-table-export"></i> Export CSV</button>
+              <button class="btn btn-primary" onclick="openModal('newMatter')"><i class="ti ti-plus"></i> New matter</button>
+            </div>
+          </div>
+          <div class="card-body" style="padding-bottom:0">
+            <div class="searchbar"><i class="ti ti-search"></i><input id="matter-search" oninput="renderMatters()" placeholder="Search matter, client, opponent, court/forum, case number..."/></div>
+          </div>
+          <table class="tbl">
+            <thead><tr><th>Matter #</th><th>Title</th><th>Client</th><th>Type</th><th>Forum</th><th>Owner</th><th>Stage</th><th>Deadline</th></tr></thead>
+            <tbody id="matters-table"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="page" id="page-matter-detail">
+        <div style="margin-bottom:1rem;display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn" onclick="nav('matters')"><i class="ti ti-arrow-left"></i> Back to matters</button>
+          <button class="btn" onclick="printMatterSummary()"><i class="ti ti-printer"></i> Print summary</button>
+          <button class="btn btn-danger" onclick="archiveMatter()"><i class="ti ti-archive"></i> Close matter</button>
+        </div>
+        <div class="matter-detail-header">
+          <h2 id="md-title">Matter title</h2>
+          <div class="meta" id="md-meta"></div>
+        </div>
+        <div class="tabs">
+          <div class="tab active" onclick="switchTab(this,'md-overview')">Overview</div>
+          <div class="tab" onclick="switchTab(this,'md-tasks')">Tasks & deadlines</div>
+          <div class="tab" onclick="switchTab(this,'md-docs')">Documents</div>
+          <div class="tab" onclick="switchTab(this,'md-updates')">Updates</div>
+          <div class="tab" onclick="switchTab(this,'md-fees')">Fees</div>
+          <div class="tab" onclick="switchTab(this,'md-communication')">Client message</div>
+        </div>
+        <div id="md-overview" class="tab-content"></div>
+        <div id="md-tasks" class="tab-content" style="display:none"></div>
+        <div id="md-docs" class="tab-content" style="display:none"></div>
+        <div id="md-updates" class="tab-content" style="display:none"></div>
+        <div id="md-fees" class="tab-content" style="display:none"></div>
+        <div id="md-communication" class="tab-content" style="display:none"></div>
+      </div>
+
+      <div class="page" id="page-tasks">
+        <div class="two-col">
+          <div>
+            <div class="card"><div class="card-header">Overdue <span class="badge badge-danger" id="overdue-count">0</span></div><div class="card-body" id="tasks-overdue"></div></div>
+            <div class="card"><div class="card-header">Due today</div><div class="card-body" id="tasks-today"></div></div>
+          </div>
+          <div>
+            <div class="card"><div class="card-header">This week</div><div class="card-body" id="tasks-week"></div></div>
+            <div class="card"><div class="card-header">Upcoming</div><div class="card-body" id="tasks-upcoming"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="page" id="page-fees">
+        <div class="stats-grid" id="fees-stats"></div>
+        <div class="card">
+          <div class="card-header">
+            <span>Invoices and fee tracking</span>
+            <button class="btn btn-primary" onclick="openModal('newInvoice')"><i class="ti ti-plus"></i> New invoice</button>
+          </div>
+          <table class="tbl">
+            <thead><tr><th>Invoice #</th><th>Matter</th><th>Client</th><th>Amount</th><th>Paid</th><th>Due</th><th>Status</th></tr></thead>
+            <tbody id="fees-table"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="page" id="page-documents">
+        <div class="card">
+          <div class="card-header">
+            <span>Document checklist — all matters</span>
+            <button class="btn" onclick="exportCsv('documents')"><i class="ti ti-table-export"></i> Export CSV</button>
+          </div>
+          <table class="tbl">
+            <thead><tr><th>Document</th><th>Matter</th><th>Required by</th><th>Status</th><th>Notes</th></tr></thead>
+            <tbody id="docs-table"></tbody>
+          </table>
+        </div>
+      </div>
+
+
+      <div class="page" id="page-calendar">
+        <div class="stats-grid" id="calendar-stats"></div>
+        <div class="two-col">
+          <div class="card">
+            <div class="card-header">
+              <span>Court hearings and important dates</span>
+              <button class="btn btn-primary" onclick="openEventModal()"><i class="ti ti-plus"></i> Add date</button>
+            </div>
+            <div class="card-body" style="padding-bottom:0">
+              <div class="searchbar"><i class="ti ti-search"></i><input id="calendar-search" oninput="renderCalendar()" placeholder="Search hearing, matter, forum, location..."/></div>
+            </div>
+            <table class="tbl">
+              <thead><tr><th>Date</th><th>Type</th><th>Matter</th><th>Title</th><th>Forum / location</th><th>Status</th><th></th></tr></thead>
+              <tbody id="calendar-table"></tbody>
+            </table>
+          </div>
+          <div>
+            <div class="card">
+              <div class="card-header">Next 7 days</div>
+              <div class="card-body" id="calendar-next7"></div>
+            </div>
+            <div class="card">
+              <div class="card-header">Auto-created dates</div>
+              <div class="card-body">
+                <div class="notice">The calendar includes manually added events, matter deadlines, and task deadlines. Manual events can be hearings, filing dates, consultations, payment dates, or internal reminders.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="page" id="page-templates">
+        <div class="card">
+          <div class="card-header">
+            <span>Admin update templates</span>
+            <button class="btn btn-primary" onclick="openTemplateModal()"><i class="ti ti-plus"></i> New template</button>
+          </div>
+          <div class="card-body">
+            <div class="notice" style="margin-bottom:1rem">
+              Use variables inside templates: {client}, {matter_ref}, {matter_title}, {stage}, {deadline}, {next_step}, {forum}, {firm}, {owner}.
+            </div>
+            <div class="searchbar"><i class="ti ti-search"></i><input id="template-search" oninput="renderTemplates()" placeholder="Search templates..."/></div>
+          </div>
+          <table class="tbl">
+            <thead><tr><th>Name</th><th>Category</th><th>Subject</th><th>Default visibility</th><th></th></tr></thead>
+            <tbody id="templates-table"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="page" id="page-emails">
+        <div class="stats-grid" id="email-stats"></div>
+        <div class="two-col">
+          <div class="card">
+            <div class="card-header">
+              <span>Email update queue</span>
+              <button class="btn btn-primary" onclick="openComposeEmailModal()"><i class="ti ti-mail-plus"></i> Create update</button>
+            </div>
+            <table class="tbl">
+              <thead><tr><th>Created</th><th>To</th><th>Matter</th><th>Subject</th><th>Status</th><th></th></tr></thead>
+              <tbody id="emails-table"></tbody>
+            </table>
+          </div>
+          <div>
+            <div class="card">
+              <div class="card-header">Auto email sending</div>
+              <div class="card-body">
+                <div class="notice warn">
+                  In this single HTML version, the app can generate emails, queue them, open your mail client, and mark them as sent. True automatic background sending requires a secure backend email service so OS Legal email credentials are not exposed in the browser.
+                </div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-header">Email workflow</div>
+              <div class="card-body" id="email-workflow"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="page" id="page-clients">
+        <div class="card">
+          <div class="card-header">
+            <span>Client directory</span>
+            <button class="btn btn-primary" onclick="openModal('newClient')"><i class="ti ti-plus"></i> New client</button>
+          </div>
+          <div class="card-body" style="padding-bottom:0">
+            <div class="searchbar"><i class="ti ti-search"></i><input id="client-search" oninput="renderClients()" placeholder="Search client, company, phone, email..."/></div>
+          </div>
+          <table class="tbl">
+            <thead><tr><th>Name</th><th>Type</th><th>Email</th><th>Phone</th><th>ID / Licence</th><th>Active matters</th></tr></thead>
+            <tbody id="clients-table"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="page" id="page-conflict">
+        <div class="two-col">
+          <div class="card">
+            <div class="card-header">Conflict check</div>
+            <div class="card-body">
+              <div class="notice warn" style="margin-bottom:1rem">
+                This is an internal screening tool. It does not replace professional conflict review, but it helps search existing clients, leads, matters, opponents, and related parties.
+              </div>
+              <div class="form-group"><label>Client / party name</label><input id="conf-client" placeholder="Client, company, related person"/></div>
+              <div class="form-group"><label>Opponent / counterparty name</label><input id="conf-opponent" placeholder="Opponent, employer, landlord, developer, company"/></div>
+              <div class="form-group"><label>Related words</label><input id="conf-keywords" placeholder="Email, phone, trade licence, case number, brand, project"/></div>
+              <button class="btn btn-primary" onclick="runConflictPage()"><i class="ti ti-shield-search"></i> Run check</button>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header">Results</div>
+            <div class="card-body" id="conf-results"><div class="empty"><i class="ti ti-shield-search"></i><p>Run a check to see possible matches.</p></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="page" id="page-admin">
+        <div class="two-col">
+          <div class="card">
+            <div class="card-header">Firm settings</div>
+            <div class="card-body">
+              <div class="form-group"><label>Firm name</label><input id="set-firmName"/></div>
+              <div class="form-group"><label>Primary email</label><input id="set-email"/></div>
+              <div class="form-group"><label>Phone</label><input id="set-phone"/></div>
+              <div class="form-group"><label>WhatsApp number</label><input id="set-whatsapp"/></div>
+              <div class="form-group"><label>Address</label><textarea id="set-address"></textarea></div>
+              <button class="btn btn-primary" onclick="saveSettings()"><i class="ti ti-device-floppy"></i> Save settings</button>
+            </div>
+          </div>
+          <div>
+            <div class="card">
+              <div class="card-header">Backup and restore</div>
+              <div class="card-body">
+                <div class="notice" style="margin-bottom:1rem">All records are saved in this browser. Use backup export regularly. For real firm-wide use, this should be moved to a secure backend database.</div>
+                <div style="display:flex;gap:8px;flex-wrap:wrap">
+                  <button class="btn btn-primary" onclick="exportBackup()"><i class="ti ti-download"></i> Export backup</button>
+                  <label class="btn"><i class="ti ti-upload"></i> Import backup<input type="file" accept="application/json" onchange="importBackup(event)" style="display:none"/></label>
+                  <button class="btn btn-danger" onclick="resetDemoData()"><i class="ti ti-rotate-clockwise"></i> Reset demo data</button>
+                </div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-header">Security note</div>
+              <div class="card-body">
+                <div class="notice danger">
+                  This single-file app is suitable for internal testing and workflow design only. Do not upload confidential client documents until login, role permissions, encrypted storage, server-side database, and audit logs are implemented.
+                </div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-header">Team members</div>
+              <div class="card-body" id="admin-team"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- New Lead Modal -->
+<div class="modal-overlay" id="modal-newLead">
+  <div class="modal large">
+    <div class="modal-header">New lead intake <button class="icon-btn" onclick="closeModal('newLead')"><i class="ti ti-x"></i></button></div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="form-section-title">Client information</div>
+        <div class="form-group"><label>Client type</label><select id="lead-clientType"><option>Individual</option><option>Company</option></select></div>
+        <div class="form-group"><label>Client / company name *</label><input id="lead-name" placeholder="Full name or company"/></div>
+        <div class="form-group"><label>Email</label><input id="lead-email" type="email" placeholder="client@email.com"/></div>
+        <div class="form-group"><label>Phone / WhatsApp</label><input id="lead-phone" placeholder="+971..."/></div>
+        <div class="form-group"><label>Nationality / country</label><input id="lead-nationality" placeholder="e.g. UAE / Egypt / UK"/></div>
+        <div class="form-group"><label>Emirates ID / Passport / Trade Licence</label><input id="lead-identity" placeholder="ID, passport or licence number"/></div>
+
+        <div class="form-section-title">Matter screening</div>
+        <div class="form-group"><label>Practice area *</label><select id="lead-area"></select></div>
+        <div class="form-group"><label>Forum / jurisdiction</label><select id="lead-forum"></select></div>
+        <div class="form-group"><label>Opponent / counterparty</label><input id="lead-opponent" placeholder="Opponent, employer, developer, landlord, etc."/></div>
+        <div class="form-group"><label>Lead source</label><select id="lead-source"><option>Website</option><option>WhatsApp</option><option>Referral</option><option>Existing client</option><option>Online platform</option><option>Walk-in</option><option>Other</option></select></div>
+        <div class="form-group"><label>Urgency</label><select id="lead-urgency"><option>Normal</option><option>High</option><option>Urgent</option></select></div>
+        <div class="form-group"><label>Next follow-up</label><input id="lead-followup" type="date"/></div>
+        <div class="form-group"><label>Assigned owner</label><select id="lead-assigned"></select></div>
+        <div class="form-group"><label>Stage</label><select id="lead-stage"><option>New</option><option>Contacted</option><option>Consultation scheduled</option><option>Quote sent</option><option>Retained</option><option>Rejected</option></select></div>
+        <div class="form-group full"><label>Facts / request</label><textarea id="lead-desc" placeholder="Briefly describe the facts, key dates, amount involved, objective and urgency."></textarea></div>
+        <div class="form-group full"><label>Internal notes</label><textarea id="lead-notes" placeholder="Internal notes, conflict concerns, documents requested, quote discussion."></textarea></div>
+        <div class="form-group full">
+          <button class="btn" onclick="runConflictFromLead()"><i class="ti ti-shield-search"></i> Run conflict check</button>
+          <div id="lead-conflict-result" style="margin-top:10px"></div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal('newLead')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveLead()">Save lead</button>
+    </div>
+  </div>
+</div>
+
+<!-- New Matter Modal -->
+<div class="modal-overlay" id="modal-newMatter">
+  <div class="modal large">
+    <div class="modal-header">Open new matter <button class="icon-btn" onclick="closeModal('newMatter')"><i class="ti ti-x"></i></button></div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="form-section-title">Matter information</div>
+        <div class="form-group"><label>Matter title *</label><input id="m-title" placeholder="e.g. Commercial recovery claim against ABC LLC"/></div>
+        <div class="form-group"><label>Client *</label><input id="m-client" placeholder="Client name"/></div>
+        <div class="form-group"><label>Client type</label><select id="m-clientType"><option>Individual</option><option>Company</option></select></div>
+        <div class="form-group"><label>Client email</label><input id="m-email" type="email"/></div>
+        <div class="form-group"><label>Client phone</label><input id="m-phone"/></div>
+        <div class="form-group"><label>Emirates ID / Passport / Trade Licence</label><input id="m-identity"/></div>
+        <div class="form-group"><label>Practice area</label><select id="m-area"></select></div>
+        <div class="form-group"><label>Forum / jurisdiction</label><select id="m-forum"></select></div>
+        <div class="form-group"><label>Case number / complaint number</label><input id="m-caseNo" placeholder="Optional"/></div>
+        <div class="form-group"><label>Opposing party</label><input id="m-opponent"/></div>
+        <div class="form-group"><label>Assigned owner</label><select id="m-owner"></select></div>
+        <div class="form-group"><label>Priority</label><select id="m-priority"><option>Normal</option><option>High</option><option>Urgent</option></select></div>
+        <div class="form-group"><label>Stage</label><select id="m-stage"></select></div>
+        <div class="form-group"><label>Next deadline / hearing</label><input id="m-deadline" type="date"/></div>
+
+        <div class="form-section-title">Fees and value</div>
+        <div class="form-group"><label>Claim amount / exposure (AED)</label><input id="m-claim" type="number" placeholder="0"/></div>
+        <div class="form-group"><label>Professional fee quoted (AED)</label><input id="m-fee" type="number" placeholder="0"/></div>
+        <div class="form-group"><label>Court / government fee estimate (AED)</label><input id="m-courtFee" type="number" placeholder="0"/></div>
+        <div class="form-group"><label>Amount paid (AED)</label><input id="m-paid" type="number" placeholder="0"/></div>
+        <div class="form-group full"><label>Facts summary</label><textarea id="m-desc" placeholder="Core facts, evidence available, procedural status and client objective."></textarea></div>
+        <div class="form-group full"><label>Recommended next step</label><textarea id="m-next" placeholder="Example: prepare legal notice, file police complaint, register case, send quote, schedule consultation."></textarea></div>
+        <div class="form-group full">
+          <button class="btn" onclick="runConflictFromMatter()"><i class="ti ti-shield-search"></i> Run conflict check</button>
+          <div id="matter-conflict-result" style="margin-top:10px"></div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal('newMatter')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveMatter()">Open matter</button>
+    </div>
+  </div>
+</div>
+
+<!-- New Client Modal -->
+<div class="modal-overlay" id="modal-newClient">
+  <div class="modal">
+    <div class="modal-header">New client <button class="icon-btn" onclick="closeModal('newClient')"><i class="ti ti-x"></i></button></div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="form-group"><label>Client type</label><select id="c-type"><option>Individual</option><option>Company</option></select></div>
+        <div class="form-group"><label>Name *</label><input id="c-name"/></div>
+        <div class="form-group"><label>Email</label><input id="c-email" type="email"/></div>
+        <div class="form-group"><label>Phone</label><input id="c-phone"/></div>
+        <div class="form-group"><label>Nationality / country</label><input id="c-nationality"/></div>
+        <div class="form-group"><label>Emirates ID / Passport / Trade Licence</label><input id="c-identity"/></div>
+        <div class="form-group full"><label>Address</label><input id="c-address"/></div>
+        <div class="form-group full"><label>Notes</label><textarea id="c-notes"></textarea></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal('newClient')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveClient()">Save client</button>
+    </div>
+  </div>
+</div>
+
+<!-- New Invoice Modal -->
+<div class="modal-overlay" id="modal-newInvoice">
+  <div class="modal">
+    <div class="modal-header">New invoice <button class="icon-btn" onclick="closeModal('newInvoice')"><i class="ti ti-x"></i></button></div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="form-group full"><label>Matter</label><select id="inv-matter"></select></div>
+        <div class="form-group"><label>Amount (AED)</label><input id="inv-amount" type="number" placeholder="0"/></div>
+        <div class="form-group"><label>Paid amount (AED)</label><input id="inv-paid" type="number" placeholder="0"/></div>
+        <div class="form-group"><label>Issued date</label><input id="inv-issued" type="date"/></div>
+        <div class="form-group"><label>Due date</label><input id="inv-due" type="date"/></div>
+        <div class="form-group full"><label>Description</label><textarea id="inv-desc" placeholder="Professional fees, court fees, consultation fee, appeal fee, etc."></textarea></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal('newInvoice')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveInvoice()">Save invoice</button>
+    </div>
+  </div>
+</div>
+
+<!-- Task Modal -->
+<div class="modal-overlay" id="modal-addTask">
+  <div class="modal small">
+    <div class="modal-header">Add task <button class="icon-btn" onclick="closeModal('addTask')"><i class="ti ti-x"></i></button></div>
+    <div class="modal-body">
+      <div class="form-group"><label>Task title *</label><input id="task-title" placeholder="e.g. Prepare legal notice"/></div>
+      <div class="form-group"><label>Due date</label><input id="task-due" type="date"/></div>
+      <div class="form-group"><label>Priority</label><select id="task-priority"><option>Normal</option><option>High</option><option>Urgent</option></select></div>
+      <div class="form-group"><label>Assigned to</label><select id="task-owner"></select></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal('addTask')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveTask()">Add task</button>
+    </div>
+  </div>
+</div>
+
+<!-- Update Modal -->
+<div class="modal-overlay" id="modal-addUpdate">
+  <div class="modal small">
+    <div class="modal-header">Post matter update <button class="icon-btn" onclick="closeModal('addUpdate')"><i class="ti ti-x"></i></button></div>
+    <div class="modal-body">
+      <div class="form-group"><label>Update type</label><select id="upd-type"><option>General update</option><option>Hearing result</option><option>Document filed</option><option>Client action required</option><option>Payment update</option><option>Case milestone</option></select></div>
+      <div class="form-group"><label>Title *</label><input id="upd-title" placeholder="Short title"/></div>
+      <div class="form-group"><label>Message *</label><textarea id="upd-msg" placeholder="Write update for file and/or client."></textarea></div>
+      <label style="display:flex;gap:8px;align-items:center"><input id="upd-client-visible" type="checkbox" checked style="width:15px"/> Visible to client update template</label>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal('addUpdate')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveUpdate()">Post update</button>
+    </div>
+  </div>
+</div>
+
+<!-- Document Modal -->
+<div class="modal-overlay" id="modal-addDocument">
+  <div class="modal small">
+    <div class="modal-header">Add document requirement <button class="icon-btn" onclick="closeModal('addDocument')"><i class="ti ti-x"></i></button></div>
+    <div class="modal-body">
+      <div class="form-group"><label>Document name *</label><input id="doc-name" placeholder="e.g. Emirates ID copy"/></div>
+      <div class="form-group"><label>Required by</label><input id="doc-date" type="date"/></div>
+      <div class="form-group"><label>Status</label><select id="doc-status"><option>Pending</option><option>Received</option><option>Not applicable</option></select></div>
+      <div class="form-group"><label>Notes</label><textarea id="doc-notes"></textarea></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal('addDocument')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveDocument()">Add document</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- Template Modal -->
+<div class="modal-overlay" id="modal-addTemplate">
+  <div class="modal large">
+    <div class="modal-header">Admin update template <button class="icon-btn" onclick="closeModal('addTemplate')"><i class="ti ti-x"></i></button></div>
+    <div class="modal-body">
+      <input id="template-id" type="hidden"/>
+      <div class="form-grid">
+        <div class="form-group"><label>Template name *</label><input id="template-name" placeholder="e.g. Hearing update"/></div>
+        <div class="form-group"><label>Category</label><select id="template-category"><option>General Update</option><option>Hearing Result</option><option>Document Filed</option><option>Client Action Required</option><option>Payment Reminder</option><option>Case Milestone</option></select></div>
+        <div class="form-group full"><label>Email subject *</label><input id="template-subject" placeholder="Update regarding {matter_ref}"/></div>
+        <div class="form-group full"><label>Email body *</label><textarea id="template-body" style="min-height:220px" placeholder="Dear {client}, ..."></textarea></div>
+        <label style="display:flex;gap:8px;align-items:center"><input id="template-client-visible" type="checkbox" checked style="width:15px"/> Default as client-visible update</label>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal('addTemplate')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveTemplate()"><i class="ti ti-device-floppy"></i> Save template</button>
+    </div>
+  </div>
+</div>
+
+<!-- Calendar Event Modal -->
+<div class="modal-overlay" id="modal-addEvent">
+  <div class="modal">
+    <div class="modal-header">Court hearing / important date <button class="icon-btn" onclick="closeModal('addEvent')"><i class="ti ti-x"></i></button></div>
+    <div class="modal-body">
+      <input id="event-id" type="hidden"/>
+      <div class="form-grid">
+        <div class="form-group full"><label>Linked matter</label><select id="event-matter"></select></div>
+        <div class="form-group"><label>Type</label><select id="event-type"><option>Court hearing</option><option>Filing deadline</option><option>Expert meeting</option><option>Consultation</option><option>Payment date</option><option>Internal reminder</option><option>Limitation / prescription date</option><option>Other</option></select></div>
+        <div class="form-group"><label>Status</label><select id="event-status"><option>Scheduled</option><option>Completed</option><option>Adjourned</option><option>Cancelled</option></select></div>
+        <div class="form-group"><label>Date *</label><input id="event-date" type="date"/></div>
+        <div class="form-group"><label>Time</label><input id="event-time" type="time"/></div>
+        <div class="form-group full"><label>Title *</label><input id="event-title" placeholder="e.g. First hearing / expert meeting / appeal deadline"/></div>
+        <div class="form-group full"><label>Forum / location</label><input id="event-location" placeholder="Dubai Courts, DIFC, RDC, Police station, online meeting..."/></div>
+        <div class="form-group full"><label>Notes</label><textarea id="event-notes" placeholder="Attendance required, documents needed, hearing link, judge/expert notes..."></textarea></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal('addEvent')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveEvent()"><i class="ti ti-device-floppy"></i> Save date</button>
+    </div>
+  </div>
+</div>
+
+<!-- Compose Email Modal -->
+<div class="modal-overlay" id="modal-composeEmail">
+  <div class="modal large">
+    <div class="modal-header">Create client email update <button class="icon-btn" onclick="closeModal('composeEmail')"><i class="ti ti-x"></i></button></div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="form-group"><label>Matter</label><select id="email-matter" onchange="refreshEmailTemplatePreview()"></select></div>
+        <div class="form-group"><label>Template</label><select id="email-template" onchange="refreshEmailTemplatePreview()"></select></div>
+        <div class="form-group full"><label>To</label><input id="email-to" placeholder="client@email.com"/></div>
+        <div class="form-group full"><label>Subject</label><input id="email-subject"/></div>
+        <div class="form-group full"><label>Email body</label><textarea id="email-body" style="min-height:260px"></textarea></div>
+        <label style="display:flex;gap:8px;align-items:center"><input id="email-log-update" type="checkbox" checked style="width:15px"/> Also add this as a client-visible matter update</label>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal('composeEmail')">Cancel</button>
+      <button class="btn" onclick="copyComposedEmail()"><i class="ti ti-copy"></i> Copy</button>
+      <button class="btn" onclick="openComposedEmailClient()"><i class="ti ti-mail-forward"></i> Open mail client</button>
+      <button class="btn btn-primary" onclick="queueComposedEmail()"><i class="ti ti-inbox"></i> Add to queue</button>
+    </div>
+  </div>
+</div>
+
+
+<div class="toast" id="toast"></div>
+
+<script>
+const STORAGE_KEY = 'oslegal_uae_crm_v2';
+
+const matterTypes = [
+  'Commercial / Civil Recovery',
+  'Criminal Complaint',
+  'Employment / Labour',
+  'Real Estate / Tenancy',
+  'Corporate / Contract',
+  'DIFC / Arbitration',
+  'Family / Settlement',
+  'Travel Ban / Police Inquiry',
+  'Insurance / Sanadak',
+  'Intellectual Property'
+];
+
+const forums = [
+  'Dubai Courts',
+  'DIFC Courts',
+  'Abu Dhabi Courts',
+  'Federal Courts',
+  'Rental Dispute Centre',
+  'MOHRE',
+  'Dubai Police / Public Prosecution',
+  'DIAC Arbitration',
+  'Sanadak / Insurance Dispute',
+  'Notary / DED / Government Authority',
+  'Other'
+];
+
+const team = ['Omar', 'Louy', 'Ameen', 'Hozaifa', 'Khalid', 'Ahmed', 'Omnia', 'Accounts'];
+
+const stages = [
+  'New Enquiry',
+  'Conflict Check',
+  'Consultation Scheduled',
+  'Quote Sent',
+  'Engagement Letter',
+  'Legal Notice',
+  'Filing / Registration',
+  'Service / Notification',
+  'Hearing / Investigation',
+  'Expert / Evidence',
+  'Judgment / Award',
+  'Appeal / Cassation',
+  'Execution / Recovery',
+  'Closed'
+];
+
+const docTemplates = {
+  'Commercial / Civil Recovery': [
+    'Trade licence / passport or Emirates ID',
+    'Signed agreement / purchase order / invoice',
+    'Statement of account',
+    'Proof of delivery / completion',
+    'WhatsApp / email correspondence',
+    'Demand notices already sent'
+  ],
+  'Criminal Complaint': [
+    'Complainant Emirates ID / passport',
+    'Accused details, if available',
+    'Screenshots / messages / bank transfers',
+    'Original phone/device for evidence review, if applicable',
+    'Timeline of events',
+    'Power of Attorney'
+  ],
+  'Employment / Labour': [
+    'Employment contract',
+    'Salary slips / WPS record',
+    'Termination letter / resignation',
+    'Visa and Emirates ID copy',
+    'Leave balance and gratuity calculation',
+    'MOHRE / DIFC correspondence'
+  ],
+  'Real Estate / Tenancy': [
+    'Title deed / tenancy contract / Form F',
+    'Ejari / DLD documents',
+    'Payment receipts / cheques',
+    'Notices exchanged',
+    'Photos / inspection reports',
+    'Broker or conveyancer correspondence'
+  ],
+  'Corporate / Contract': [
+    'Trade licence and MOA/AOA',
+    'Board/shareholder resolutions',
+    'Main contract / MOU / LOI',
+    'Invoices / account statements',
+    'Counterparty details',
+    'Relevant correspondence'
+  ],
+  'DIFC / Arbitration': [
+    'Arbitration agreement / jurisdiction clause',
+    'Notice of arbitration / claim form',
+    'Procedural orders',
+    'Power of Attorney / Letter of Authorisation',
+    'Evidence bundle',
+    'Prior correspondence with tribunal/court'
+  ],
+  'Family / Settlement': [
+    'Marriage certificate / divorce judgment',
+    'Child birth certificate / passport',
+    'Custody and travel documents',
+    'Financial settlement terms',
+    'Court case numbers',
+    'Power of Attorney'
+  ],
+  'Travel Ban / Police Inquiry': [
+    'Passport copy',
+    'Emirates ID copy, if available',
+    'Visa copy',
+    'Known case or police report number',
+    'Prior court or police correspondence',
+    'Power of Attorney'
+  ],
+  'Insurance / Sanadak': [
+    'Policy schedule and full wording',
+    'Claim notification correspondence',
+    'Broker correspondence',
+    'Insurer rejection/coverage letter',
+    'Loss documents and invoices',
+    'Sanadak complaint documents'
+  ],
+  'Intellectual Property': [
+    'Trademark registration certificate',
+    'Brand usage evidence',
+    'Company trade licence',
+    'Infringing material/screenshots',
+    'Prior correspondence',
+    'Power of Attorney'
+  ]
+};
+
+function q(id) { return document.getElementById(id); }
+function qa(sel) { return Array.from(document.querySelectorAll(sel)); }
+function iso(d = new Date()) { return new Date(d).toISOString().slice(0,10); }
+function addDays(n) { const d = new Date(); d.setDate(d.getDate() + n); return iso(d); }
+function uid(prefix) { return prefix + '-' + Date.now().toString().slice(-7) + '-' + Math.floor(Math.random()*900+100); }
+function matterRef() { return 'OSL-' + new Date().getFullYear() + '-' + String((state.matters?.length || 0) + 1).padStart(3, '0'); }
+function invRef() { return 'INV-' + new Date().getFullYear() + '-' + String((state.invoices?.length || 0) + 1).padStart(3, '0'); }
+function esc(v) {
+  return String(v ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+function money(v) {
+  return new Intl.NumberFormat('en-AE', { style:'currency', currency:'AED', maximumFractionDigits:0 }).format(Number(v || 0));
+}
+function daysUntil(date) {
+  if (!date) return null;
+  const today = new Date(iso());
+  const due = new Date(date);
+  return Math.ceil((due - today) / (1000*60*60*24));
+}
+function dateHuman(date) {
+  if (!date) return '-';
+  const diff = daysUntil(date);
+  if (diff === null) return '-';
+  if (diff < 0) return 'Overdue by ' + Math.abs(diff) + ' day(s)';
+  if (diff === 0) return 'Today';
+  if (diff === 1) return 'Tomorrow';
+  return 'In ' + diff + ' days';
+}
+
+function seedData() {
+  const m1 = 'MAT-001';
+  const m2 = 'MAT-002';
+  return {
+    settings: {
+      firmName: 'OS Legal',
+      email: 'info@oslegal.ae',
+      phone: '+971 56 333 3108',
+      whatsapp: '971563333108',
+      address: 'Dubai, United Arab Emirates',
+      currency: 'AED'
+    },
+    leads: [
+      {
+        id: 'LEAD-001', clientType:'Company', name:'Demo Trading LLC', email:'client@example.com', phone:'+971 50 000 0000',
+        nationality:'UAE', identity:'TL-000000', area:'Commercial / Civil Recovery', forum:'Dubai Courts', opponent:'Counterparty LLC',
+        source:'Website', urgency:'High', stage:'Quote Sent', followup:addDays(1), assigned:'Omar',
+        desc:'Potential recovery claim for unpaid invoices and delayed payments.', notes:'Send engagement letter after conflict clearance.', createdAt: iso()
+      },
+      {
+        id: 'LEAD-002', clientType:'Individual', name:'Demo Employee', email:'employee@example.com', phone:'+971 55 000 0000',
+        nationality:'UK', identity:'Passport copy pending', area:'Employment / Labour', forum:'DIFC Courts', opponent:'Former Employer Ltd',
+        source:'Referral', urgency:'Normal', stage:'Consultation Scheduled', followup:addDays(3), assigned:'Hozaifa',
+        desc:'Unpaid salary and end-of-service benefit enquiry.', notes:'Request contract and final settlement.', createdAt: iso()
+      }
+    ],
+    clients: [
+      { id:'CLI-001', type:'Company', name:'RA International Demo FZCO', email:'legal@example.com', phone:'+971 4 000 0000', nationality:'UAE', identity:'FZCO-0001', address:'Dubai', notes:'Demo record only.' },
+      { id:'CLI-002', type:'Individual', name:'Demo Client', email:'client@example.com', phone:'+971 50 000 0000', nationality:'UAE', identity:'784-0000-0000000-0', address:'Dubai', notes:'' }
+    ],
+    matters: [
+      {
+        id:m1, ref:'OSL-2026-001', title:'Commercial Recovery Claim', client:'Demo Client', clientType:'Company', email:'client@example.com', phone:'+971 50 000 0000',
+        identity:'TL-000000', area:'Commercial / Civil Recovery', forum:'Dubai Courts', caseNo:'', opponent:'Counterparty LLC', owner:'Omar',
+        status:'Active', stage:'Legal Notice', priority:'High', opened:iso(), deadline:addDays(5), claimAmount:250000, professionalFee:30000, courtFee:15000, paid:15000,
+        desc:'Client claims unpaid invoices for completed services. Legal notice is prepared and pending final confirmation.',
+        nextStep:'Serve legal notice, wait for response, then prepare statement of claim if no settlement is reached.'
+      },
+      {
+        id:m2, ref:'OSL-2026-002', title:'Employment Final Settlement Claim', client:'Demo Employee', clientType:'Individual', email:'employee@example.com', phone:'+971 55 000 0000',
+        identity:'Passport copy pending', area:'Employment / Labour', forum:'DIFC Courts', caseNo:'', opponent:'Former Employer Ltd', owner:'Hozaifa',
+        status:'Active', stage:'Filing / Registration', priority:'Normal', opened:iso(), deadline:addDays(10), claimAmount:78000, professionalFee:20000, courtFee:3000, paid:10000,
+        desc:'Unpaid salary, gratuity, and withheld final settlement.',
+        nextStep:'Prepare claim summary, calculate dues, and confirm employment documents.'
+      }
+    ],
+    tasks: [
+      { id:'TASK-001', matterId:m1, title:'Send approved legal notice', due:addDays(1), priority:'High', owner:'Omar', status:'Pending' },
+      { id:'TASK-002', matterId:m1, title:'Prepare statement of claim skeleton', due:addDays(6), priority:'Normal', owner:'Hozaifa', status:'Pending' },
+      { id:'TASK-003', matterId:m2, title:'Prepare dues calculation table', due:addDays(2), priority:'High', owner:'Hozaifa', status:'In Progress' },
+      { id:'TASK-004', matterId:m2, title:'Request missing employment contract', due:addDays(-1), priority:'Normal', owner:'Omnia', status:'Pending' }
+    ],
+    documents: [
+      { id:'DOC-001', matterId:m1, name:'Trade licence / passport or Emirates ID', requiredBy:addDays(2), status:'Received', notes:'' },
+      { id:'DOC-002', matterId:m1, name:'Signed agreement / purchase order / invoice', requiredBy:addDays(2), status:'Received', notes:'' },
+      { id:'DOC-003', matterId:m1, name:'Statement of account', requiredBy:addDays(2), status:'Pending', notes:'Client to provide updated SOA.' },
+      { id:'DOC-004', matterId:m2, name:'Employment contract', requiredBy:addDays(3), status:'Pending', notes:'' },
+      { id:'DOC-005', matterId:m2, name:'Salary slips / WPS record', requiredBy:addDays(3), status:'Received', notes:'' }
+    ],
+    updates: [
+      { id:'UPD-001', matterId:m1, date:iso(), type:'Document filed', title:'Legal notice drafted', msg:'The legal notice has been prepared and is ready for client approval before service.', clientVisible:true },
+      { id:'UPD-002', matterId:m2, date:iso(), type:'Client action required', title:'Documents requested', msg:'Client needs to provide the employment contract and final salary slip.', clientVisible:true }
+    ],
+    invoices: [
+      { id:'INV-001', ref:'INV-2026-001', matterId:m1, amount:30000, paid:15000, issued:iso(), due:addDays(7), desc:'Professional fees — commercial recovery claim' },
+      { id:'INV-002', ref:'INV-2026-002', matterId:m2, amount:20000, paid:10000, issued:iso(), due:addDays(14), desc:'Professional fees — employment claim' }
+    ],
+    templates: [
+      {
+        id:'TPL-001', name:'General matter update', category:'General Update',
+        subject:'Update regarding {matter_ref} — {matter_title}',
+        body:'Dear {client},\n\nI hope you are doing well.\n\nWe would like to update you regarding your matter {matter_ref} — {matter_title}.\n\nCurrent stage: {stage}\nNext deadline/date: {deadline}\n\nNext step:\n{next_step}\n\nBest regards,\n{firm}',
+        clientVisible:true
+      },
+      {
+        id:'TPL-002', name:'Court hearing update', category:'Hearing Result',
+        subject:'Court hearing update — {matter_ref}',
+        body:'Dear {client},\n\nWe are writing to update you regarding the latest hearing in your matter {matter_ref} — {matter_title}.\n\nCurrent stage: {stage}\nForum: {forum}\n\nThe next important date is: {deadline}.\n\nNext step:\n{next_step}\n\nBest regards,\n{firm}',
+        clientVisible:true
+      },
+      {
+        id:'TPL-003', name:'Documents required', category:'Client Action Required',
+        subject:'Documents required for {matter_ref}',
+        body:'Dear {client},\n\nTo proceed with your matter {matter_ref} — {matter_title}, please provide the pending documents requested by our team.\n\nCurrent stage: {stage}\nNext deadline/date: {deadline}\n\nYour prompt response will help us avoid any procedural delay.\n\nBest regards,\n{firm}',
+        clientVisible:true
+      },
+      {
+        id:'TPL-004', name:'Payment reminder', category:'Payment Reminder',
+        subject:'Payment reminder — {matter_ref}',
+        body:'Dear {client},\n\nThis is a kind reminder regarding the outstanding payment connected to your matter {matter_ref} — {matter_title}.\n\nPlease arrange the pending payment so we can continue the required legal work without delay.\n\nBest regards,\n{firm}',
+        clientVisible:false
+      }
+    ],
+    events: [
+      { id:'EVT-001', matterId:m1, type:'Court hearing', title:'Legal notice follow-up date', date:addDays(5), time:'10:00', location:'Dubai Courts', status:'Scheduled', notes:'Review whether payment was received or file claim.' },
+      { id:'EVT-002', matterId:m2, type:'Filing deadline', title:'Employment claim filing deadline', date:addDays(10), time:'', location:'DIFC Courts', status:'Scheduled', notes:'Confirm final statement of claim and documents.' }
+    ],
+    emailQueue: [
+      { id:'EML-001', matterId:m1, to:'client@example.com', subject:'Update regarding OSL-2026-001 — Commercial Recovery Claim', body:'Dear Demo Client,\n\nThe legal notice has been prepared and is ready for your approval.\n\nBest regards,\nOS Legal', status:'Draft', createdAt:iso(), sentAt:'' }
+    ],
+    activity: [
+      { id:'ACT-001', type:'info', msg:'CRM initialized with OS Legal UAE workflow.', time:new Date().toLocaleString() }
+    ],
+    currentMatterId: m1
+  };
+}
+
+let state = loadState();
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) return JSON.parse(raw);
+  } catch (e) {}
+  return seedData();
+}
+function saveState() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+}
+function logActivity(msg, type='info') {
+  state.activity.unshift({ id: uid('ACT'), msg, type, time: new Date().toLocaleString() });
+  state.activity = state.activity.slice(0, 50);
+  saveState();
+}
+function toast(msg) {
+  const el = q('toast');
+  el.textContent = msg;
+  el.classList.remove('show');
+  void el.offsetWidth;
+  el.classList.add('show');
+}
+
+
+function migrateState() {
+  if (!state.templates) state.templates = seedData().templates;
+  if (!state.events) state.events = [];
+  if (!state.emailQueue) state.emailQueue = [];
+  if (!state.settings) state.settings = seedData().settings;
+  saveState();
+}
+
+function populateSelects() {
+  const fill = (id, arr, selected='') => {
+    const el = q(id);
+    if (!el) return;
+    el.innerHTML = arr.map(v => `<option ${v===selected?'selected':''}>${esc(v)}</option>`).join('');
+  };
+  fill('lead-area', matterTypes);
+  fill('lead-forum', forums);
+  fill('lead-assigned', team);
+  fill('m-area', matterTypes);
+  fill('m-forum', forums);
+  fill('m-owner', team);
+  fill('m-stage', stages, 'New Enquiry');
+  fill('task-owner', team);
+  const matterOptions = state.matters.filter(m=>m.status !== 'Closed').map(m => `<option value="${esc(m.id)}">${esc(m.ref)} — ${esc(m.title)} / ${esc(m.client)}</option>`).join('');
+  const inv = q('inv-matter');
+  if (inv) inv.innerHTML = matterOptions;
+  const evt = q('event-matter');
+  if (evt) evt.innerHTML = '<option value="">No linked matter</option>' + matterOptions;
+  const em = q('email-matter');
+  if (em) em.innerHTML = matterOptions;
+  const et = q('email-template');
+  if (et) et.innerHTML = (state.templates || []).map(t => `<option value="${esc(t.id)}">${esc(t.name)} — ${esc(t.category)}</option>`).join('');
+}
+
+function statusBadge(s) {
+  const map = {
+    Active:'badge-info', Closed:'badge-neutral', Pending:'badge-warn', 'In Progress':'badge-info', Done:'badge-success',
+    Paid:'badge-success', Unpaid:'badge-warn', Overdue:'badge-danger', 'Part Paid':'badge-purple',
+    New:'badge-neutral', Contacted:'badge-info', 'Consultation scheduled':'badge-warn', 'Consultation Scheduled':'badge-warn',
+    'Quote sent':'badge-warn', 'Quote Sent':'badge-warn', Retained:'badge-success', Rejected:'badge-danger',
+    Received:'badge-success', Normal:'badge-neutral', High:'badge-warn', Urgent:'badge-danger',
+    'New Enquiry':'badge-neutral', 'Conflict Check':'badge-warn', 'Legal Notice':'badge-info', 'Filing / Registration':'badge-purple',
+    'Service / Notification':'badge-purple', 'Hearing / Investigation':'badge-warn', 'Judgment / Award':'badge-info',
+    'Appeal / Cassation':'badge-danger', 'Execution / Recovery':'badge-success'
+  };
+  return `<span class="badge ${map[s] || 'badge-neutral'}">${esc(s)}</span>`;
+}
+function priorityBadge(s) { return statusBadge(s || 'Normal'); }
+
+function invoiceStatus(inv) {
+  const paid = Number(inv.paid || 0);
+  const amount = Number(inv.amount || 0);
+  if (paid >= amount && amount > 0) return 'Paid';
+  if (paid > 0) return 'Part Paid';
+  if (inv.due && daysUntil(inv.due) < 0) return 'Overdue';
+  return 'Unpaid';
+}
+
+function matterById(id) { return state.matters.find(m => m.id === id); }
+function tasksForMatter(id) { return state.tasks.filter(t => t.matterId === id); }
+function docsForMatter(id) { return state.documents.filter(d => d.matterId === id); }
+function updatesForMatter(id) { return state.updates.filter(u => u.matterId === id); }
+function invoicesForMatter(id) { return state.invoices.filter(inv => inv.matterId === id); }
+
+function nav(page) {
+  qa('.page').forEach(p => p.classList.remove('active'));
+  const target = q('page-' + page);
+  if (target) target.classList.add('active');
+  qa('.nav-item').forEach(n => n.classList.toggle('active', n.dataset.page === page));
+  const titles = {
+    dashboard:'Dashboard', leads:'Leads', matters:'Matters', tasks:'Tasks & deadlines', fees:'Fees & billing',
+    documents:'Documents', templates:'Admin templates', calendar:'Calendar', emails:'Email updates', clients:'Clients', conflict:'Conflict check', admin:'Admin settings'
+  };
+  q('page-title').textContent = titles[page] || 'Matter detail';
+  q('page-subtitle').textContent = page === 'admin'
+    ? 'Configure firm details, backup data, and review security notes'
+    : 'OS Legal operational CRM — saved locally in this browser';
+  render(page);
+}
+
+function updateBadges() {
+  const openLeads = state.leads.filter(l => !['Retained','Rejected'].includes(l.stage)).length;
+  const urgentTasks = state.tasks.filter(t => t.status !== 'Done' && daysUntil(t.due) !== null && daysUntil(t.due) <= 7).length;
+  const upcomingEvents = getCalendarItems().filter(e => e.status !== 'Completed' && daysUntil(e.date) !== null && daysUntil(e.date) <= 7).length;
+  const draftEmails = (state.emailQueue || []).filter(e => e.status !== 'Sent').length;
+  q('leads-badge').textContent = openLeads;
+  q('tasks-badge').textContent = urgentTasks;
+  q('calendar-badge').textContent = upcomingEvents;
+  q('emails-badge').textContent = draftEmails;
+}
+
+function render(page) {
+  updateBadges();
+  populateSelects();
+  if (page === 'dashboard') renderDashboard();
+  if (page === 'leads') renderLeads();
+  if (page === 'matters') renderMatters();
+  if (page === 'tasks') renderTasks();
+  if (page === 'fees') renderFees();
+  if (page === 'documents') renderDocs();
+  if (page === 'calendar') renderCalendar();
+  if (page === 'templates') renderTemplates();
+  if (page === 'emails') renderEmails();
+  if (page === 'clients') renderClients();
+  if (page === 'conflict') runConflictPage(false);
+  if (page === 'admin') renderAdmin();
+}
+
+function renderDashboard() {
+  const active = state.matters.filter(m => m.status !== 'Closed').length;
+  const openLeads = state.leads.filter(l => !['Retained','Rejected'].includes(l.stage)).length;
+  const dueToday = state.tasks.filter(t => t.status !== 'Done' && daysUntil(t.due) === 0).length;
+  const overdue = state.tasks.filter(t => t.status !== 'Done' && daysUntil(t.due) !== null && daysUntil(t.due) < 0).length;
+  const outstanding = state.invoices.reduce((sum, inv) => sum + Math.max(Number(inv.amount||0)-Number(inv.paid||0), 0), 0);
+  q('dashboard-stats').innerHTML = `
+    <div class="stat-card"><div class="stat-label">Active matters</div><div class="stat-value">${active}</div><div class="stat-sub">${state.matters.length} total matters</div></div>
+    <div class="stat-card"><div class="stat-label">Open leads</div><div class="stat-value">${openLeads}</div><div class="stat-sub">Pipeline not yet retained</div></div>
+    <div class="stat-card"><div class="stat-label">Tasks due today</div><div class="stat-value">${dueToday}</div><div class="stat-sub">${overdue} overdue</div></div>
+    <div class="stat-card"><div class="stat-label">Outstanding fees</div><div class="stat-value">${money(outstanding)}</div><div class="stat-sub">From invoices and fee records</div></div>`;
+
+  q('dash-matters').innerHTML = state.matters.filter(m => m.status !== 'Closed').slice(0,5).map(m => `
+    <tr onclick="openMatter('${esc(m.id)}')">
+      <td><strong>${esc(m.ref)}</strong><br><span class="muted">${esc(m.title)}</span></td>
+      <td>${esc(m.client)}</td>
+      <td>${statusBadge(m.stage)}</td>
+      <td><span class="muted">${esc(dateHuman(m.deadline))}</span></td>
+    </tr>`).join('') || emptyRow(4, 'No active matters.');
+
+  q('dash-leads').innerHTML = state.leads.filter(l => !['Retained','Rejected'].includes(l.stage)).slice(0,4).map(l => `
+    <tr onclick="nav('leads')"><td>${esc(l.name)}</td><td><span class="muted">${esc(l.area)}</span></td><td>${statusBadge(l.stage)}</td></tr>
+  `).join('') || emptyRow(3, 'No pending leads.');
+
+  const upcoming = state.tasks.filter(t => t.status !== 'Done').sort((a,b) => (a.due||'9999').localeCompare(b.due||'9999')).slice(0,6);
+  q('dash-deadlines').innerHTML = taskListHtml(upcoming) || '<div class="empty"><i class="ti ti-checklist"></i><p>No pending deadlines.</p></div>';
+
+  q('dash-activity').innerHTML = state.activity.slice(0,8).map(a => `
+    <div class="update-item"><div class="update-dot ${esc(a.type)}"></div><div><div style="font-size:13px">${esc(a.msg)}</div><div class="update-meta">${esc(a.time)}</div></div></div>
+  `).join('') || '<div class="empty"><i class="ti ti-history"></i><p>No activity yet.</p></div>';
+}
+
+function emptyRow(cols, msg) { return `<tr><td colspan="${cols}" style="text-align:center;color:var(--text3);padding:2rem">${esc(msg)}</td></tr>`; }
+
+function renderLeads() {
+  const term = (q('lead-search')?.value || '').toLowerCase();
+  const filtered = state.leads.filter(l => [l.name,l.phone,l.email,l.area,l.opponent,l.stage,l.forum].join(' ').toLowerCase().includes(term));
+  q('leads-table').innerHTML = filtered.map(l => `
+    <tr>
+      <td><strong>${esc(l.name)}</strong><br><span class="muted">${esc(l.clientType)} · ${esc(l.assigned)}</span></td>
+      <td><span class="muted">${esc(l.email || '-')}<br>${esc(l.phone || '-')}</span></td>
+      <td>${esc(l.area)}<br><span class="muted">${esc(l.forum)}</span></td>
+      <td>${esc(l.opponent || '-')}</td>
+      <td>${statusBadge(l.stage)}</td>
+      <td><span class="muted">${esc(l.followup || '-')}<br>${esc(dateHuman(l.followup))}</span></td>
+      <td><button class="btn" style="font-size:12px;padding:4px 10px" onclick="event.stopPropagation(); convertLead('${esc(l.id)}')">Convert →</button></td>
+    </tr>`).join('') || emptyRow(7, 'No leads found.');
+}
+
+function renderMatters() {
+  const term = (q('matter-search')?.value || '').toLowerCase();
+  const filtered = state.matters.filter(m => [m.ref,m.title,m.client,m.opponent,m.area,m.forum,m.caseNo,m.owner,m.stage].join(' ').toLowerCase().includes(term));
+  q('matters-table').innerHTML = filtered.map(m => `
+    <tr onclick="openMatter('${esc(m.id)}')">
+      <td><strong>${esc(m.ref)}</strong><br><span class="muted">${esc(m.caseNo || 'No case no.')}</span></td>
+      <td>${esc(m.title)}<br><span class="muted">Against: ${esc(m.opponent || '-')}</span></td>
+      <td>${esc(m.client)}</td>
+      <td>${esc(m.area)}</td>
+      <td>${esc(m.forum)}</td>
+      <td>${esc(m.owner)}</td>
+      <td>${statusBadge(m.stage)}</td>
+      <td><span class="muted">${esc(m.deadline || '-')}<br>${esc(dateHuman(m.deadline))}</span></td>
+    </tr>`).join('') || emptyRow(8, 'No matters found.');
+}
+
+function openMatter(id) {
+  state.currentMatterId = id;
+  saveState();
+  const m = matterById(id);
+  if (!m) return;
+  qa('.page').forEach(p => p.classList.remove('active'));
+  q('page-matter-detail').classList.add('active');
+  qa('.nav-item').forEach(n => n.classList.toggle('active', n.dataset.page === 'matters'));
+  q('page-title').textContent = m.ref + ' — ' + m.title;
+  q('page-subtitle').textContent = `${m.client} / ${m.forum} / ${m.stage}`;
+  renderMatterDetail();
+}
+
+function renderMatterDetail() {
+  const m = matterById(state.currentMatterId);
+  if (!m) return nav('matters');
+  q('md-title').textContent = m.title;
+  q('md-meta').innerHTML = `<span>${esc(m.ref)}</span><span>·</span>${statusBadge(m.status)}<span>·</span>${statusBadge(m.stage)}<span>·</span><span>${esc(m.area)}</span><span>·</span><span>${esc(m.client)}</span>`;
+
+  renderMatterOverview(m);
+  renderMatterTasks(m);
+  renderMatterDocs(m);
+  renderMatterUpdates(m);
+  renderMatterFees(m);
+  renderMatterCommunication(m);
+  switchTabById('md-overview');
+}
+
+function renderMatterOverview(m) {
+  const t = tasksForMatter(m.id);
+  const done = t.filter(x => x.status === 'Done').length;
+  const pct = t.length ? Math.round(done / t.length * 100) : 0;
+  const docs = docsForMatter(m.id);
+  const docsDone = docs.filter(d => d.status === 'Received' || d.status === 'Not applicable').length;
+  const docsPct = docs.length ? Math.round(docsDone / docs.length * 100) : 0;
+  q('md-overview').innerHTML = `
+    <div class="two-col">
+      <div class="card"><div class="card-header">Matter details</div><div class="card-body">
+        <table class="tbl">
+          <tr><td class="muted" style="width:155px">Reference</td><td>${esc(m.ref)}</td></tr>
+          <tr><td class="muted">Client</td><td>${esc(m.client)} (${esc(m.clientType)})</td></tr>
+          <tr><td class="muted">Email / phone</td><td>${esc(m.email || '-')} / ${esc(m.phone || '-')}</td></tr>
+          <tr><td class="muted">Opponent</td><td>${esc(m.opponent || '-')}</td></tr>
+          <tr><td class="muted">Forum</td><td>${esc(m.forum)}</td></tr>
+          <tr><td class="muted">Case no.</td><td>${esc(m.caseNo || '-')}</td></tr>
+          <tr><td class="muted">Owner</td><td>${esc(m.owner)}</td></tr>
+          <tr><td class="muted">Claim amount</td><td>${money(m.claimAmount)}</td></tr>
+        </table>
+      </div></div>
+      <div class="card"><div class="card-header">Progress and editable status</div><div class="card-body">
+        <div style="margin-bottom:1rem">
+          <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:6px"><span class="muted">Task progress</span><span>${done}/${t.length} done</span></div>
+          <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
+        </div>
+        <div style="margin-bottom:1rem">
+          <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:6px"><span class="muted">Document progress</span><span>${docsDone}/${docs.length} completed</span></div>
+          <div class="progress-bar"><div class="progress-fill" style="width:${docsPct}%"></div></div>
+        </div>
+        <div class="form-grid">
+          <div class="form-group"><label>Stage</label><select id="edit-stage">${stages.map(s=>`<option ${s===m.stage?'selected':''}>${esc(s)}</option>`).join('')}</select></div>
+          <div class="form-group"><label>Status</label><select id="edit-status">${['Active','Waiting Client','Waiting Court','On Hold','Closed'].map(s=>`<option ${s===m.status?'selected':''}>${esc(s)}</option>`).join('')}</select></div>
+          <div class="form-group"><label>Owner</label><select id="edit-owner">${team.map(s=>`<option ${s===m.owner?'selected':''}>${esc(s)}</option>`).join('')}</select></div>
+          <div class="form-group"><label>Next deadline</label><input id="edit-deadline" type="date" value="${esc(m.deadline || '')}"/></div>
+        </div>
+        <button class="btn btn-primary" onclick="saveMatterStatus()"><i class="ti ti-device-floppy"></i> Save status</button>
+      </div></div>
+    </div>
+    <div class="two-col">
+      <div class="card"><div class="card-header">Facts summary</div><div class="card-body"><textarea id="edit-desc">${esc(m.desc || '')}</textarea></div></div>
+      <div class="card"><div class="card-header">Next step</div><div class="card-body"><textarea id="edit-next">${esc(m.nextStep || '')}</textarea><button class="btn btn-primary" style="margin-top:10px" onclick="saveMatterNarrative()"><i class="ti ti-device-floppy"></i> Save notes</button></div></div>
+    </div>`;
+}
+
+function renderMatterTasks(m) {
+  const tasks = tasksForMatter(m.id);
+  q('md-tasks').innerHTML = `
+    <div class="card">
+      <div class="card-header">Tasks & deadlines <button class="btn btn-primary" onclick="openTaskModal()"><i class="ti ti-plus"></i> Add task</button></div>
+      <div class="card-body">${taskListHtml(tasks, true) || '<div class="empty"><i class="ti ti-checklist"></i><p>No tasks yet.</p></div>'}</div>
+    </div>`;
+}
+
+function taskListHtml(tasks, includeDelete=false) {
+  return tasks.map(t => {
+    const due = daysUntil(t.due);
+    const dueBadge = due === null ? '' : due < 0 ? statusBadge('Overdue') : due === 0 ? statusBadge('Due today') : `<span class="muted">${esc(dateHuman(t.due))}</span>`;
+    return `<div class="task-item ${t.status === 'Done' ? 'done' : ''}">
+      <input type="checkbox" class="task-check" ${t.status === 'Done' ? 'checked' : ''} onchange="toggleTask('${esc(t.id)}', this.checked)"/>
+      <div class="task-info">
+        <div class="task-title">${esc(t.title)}</div>
+        <div class="task-meta">${esc(t.matterId ? (matterById(t.matterId)?.ref || '') : 'General')} · ${esc(t.owner || '-')} · ${esc(t.due || 'No date')} · ${priorityBadge(t.priority)} ${dueBadge}</div>
+      </div>
+      ${includeDelete ? `<button class="icon-btn" onclick="deleteTask('${esc(t.id)}')"><i class="ti ti-trash"></i></button>` : ''}
+    </div>`;
+  }).join('');
+}
+
+function renderMatterDocs(m) {
+  const docs = docsForMatter(m.id);
+  const completed = docs.filter(d => ['Received','Not applicable'].includes(d.status)).length;
+  const pct = docs.length ? Math.round(completed / docs.length * 100) : 0;
+  q('md-docs').innerHTML = `
+    <div class="card">
+      <div class="card-header">
+        <span>Document checklist <span class="muted" style="font-weight:400">${completed}/${docs.length} completed</span></span>
+        <button class="btn btn-primary" onclick="openDocumentModal()"><i class="ti ti-plus"></i> Add document</button>
+      </div>
+      <div class="card-body">
+        <div style="margin-bottom:1rem"><div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div></div>
+        ${docs.map(d => `
+          <div class="checklist-item ${d.status === 'Received' ? 'done' : ''}">
+            <input type="checkbox" ${d.status === 'Received' ? 'checked' : ''} onchange="toggleDoc('${esc(d.id)}', this.checked)"/>
+            <span class="doc-name">${esc(d.name)}</span>
+            <span style="margin-left:auto;font-size:11px;color:var(--text3)">Required by ${esc(d.requiredBy || '-')}</span>
+            ${statusBadge(d.status)}
+          </div>`).join('') || '<div class="empty"><i class="ti ti-files"></i><p>No document checklist yet.</p></div>'}
+      </div>
+    </div>`;
+}
+
+function renderMatterUpdates(m) {
+  const updates = updatesForMatter(m.id);
+  q('md-updates').innerHTML = `
+    <div class="card">
+      <div class="card-header">Matter updates <button class="btn btn-primary" onclick="openUpdateModal()"><i class="ti ti-plus"></i> Post update</button></div>
+      <div class="card-body">
+        ${updates.map(u => `<div class="update-item">
+          <div class="update-dot ${u.clientVisible ? 'success' : 'info'}"></div>
+          <div><div style="font-size:13px;font-weight:600">${esc(u.title)}</div><div style="font-size:13px;line-height:1.6">${esc(u.msg)}</div><div class="update-meta">${esc(u.date)} · ${esc(u.type)} · ${u.clientVisible ? 'client visible' : 'internal only'}</div></div>
+        </div>`).join('') || '<div class="empty"><i class="ti ti-message-circle"></i><p>No updates posted yet.</p></div>'}
+      </div>
+    </div>`;
+}
+
+function renderMatterFees(m) {
+  const matterInvoices = invoicesForMatter(m.id);
+  const professionalFee = Number(m.professionalFee || 0);
+  const courtFee = Number(m.courtFee || 0);
+  const paid = Number(m.paid || 0) + matterInvoices.reduce((s, inv) => s + Number(inv.paid || 0), 0);
+  const totalInvoiced = matterInvoices.reduce((s, inv) => s + Number(inv.amount || 0), 0);
+  const expected = professionalFee + courtFee;
+  const outstanding = Math.max(expected - paid, 0);
+  q('md-fees').innerHTML = `
+    <div class="two-col">
+      <div class="card"><div class="card-header">Fee schedule</div><div class="card-body">
+        <div class="fee-row"><span>Professional fee quoted</span><strong>${money(professionalFee)}</strong></div>
+        <div class="fee-row"><span>Court / government fee estimate</span><strong>${money(courtFee)}</strong></div>
+        <div class="fee-row"><span>Amount paid on matter</span><strong>${money(m.paid)}</strong></div>
+        <div class="fee-total"><span>Expected total</span><span>${money(expected)}</span></div>
+        <div class="fee-total"><span>Outstanding balance</span><span style="color:var(--warn-text)">${money(outstanding)}</span></div>
+      </div></div>
+      <div class="card"><div class="card-header">Invoices <button class="btn" onclick="openModal('newInvoice')"><i class="ti ti-plus"></i> Add invoice</button></div><div class="card-body">
+        ${matterInvoices.map(inv => `<div class="fee-row"><span>${esc(inv.ref)}<br><span class="muted">${esc(inv.desc || '')}</span></span><span>${statusBadge(invoiceStatus(inv))} ${money(inv.amount)}</span></div>`).join('') || '<div class="empty"><i class="ti ti-receipt"></i><p>No invoices for this matter.</p></div>'}
+        <div class="fee-total"><span>Total invoiced</span><span>${money(totalInvoiced)}</span></div>
+      </div></div>
+    </div>`;
+}
+
+function renderMatterCommunication(m) {
+  const text = clientUpdateText(m);
+  q('md-communication').innerHTML = `
+    <div class="two-col">
+      <div class="card"><div class="card-header">Client update email</div><div class="card-body">
+        <pre class="template" id="client-template">${esc(text)}</pre>
+        <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
+          <button class="btn btn-primary" onclick="copyClientTemplate()"><i class="ti ti-copy"></i> Copy text</button>
+          <button class="btn" onclick="openComposeEmailModal('${esc(m.id)}')"><i class="ti ti-mail-plus"></i> Create email update</button>
+          <a class="btn" target="_blank" href="https://wa.me/${esc(state.settings.whatsapp)}?text=${encodeURIComponent(text)}"><i class="ti ti-brand-whatsapp"></i> Send via WhatsApp</a>
+        </div>
+      </div></div>
+      <div class="card"><div class="card-header">Client-facing history</div><div class="card-body">
+        ${updatesForMatter(m.id).filter(u=>u.clientVisible).map(u => `<div class="update-item"><div class="update-dot success"></div><div><div style="font-weight:600">${esc(u.title)}</div><div style="font-size:13px">${esc(u.msg)}</div><div class="update-meta">${esc(u.date)}</div></div></div>`).join('') || '<div class="empty"><i class="ti ti-message"></i><p>No client-visible updates yet.</p></div>'}
+      </div></div>
+    </div>`;
+}
+
+function clientUpdateText(m) {
+  const visible = updatesForMatter(m.id).filter(u => u.clientVisible).slice(0,3);
+  const latest = visible.length ? visible.map(u => `- ${u.title}: ${u.msg}`).join('\n') : '- We are reviewing the file and will update you with the next procedural step.';
+  return `Dear ${m.client},
+
+I hope you are doing well.
+
+We would like to update you regarding your matter (${m.ref} — ${m.title}).
+
+Current stage: ${m.stage}
+Current status: ${m.status}
+Next deadline/date: ${m.deadline || 'To be confirmed'}
+
+Latest update:
+${latest}
+
+Next step:
+${m.nextStep || 'We will confirm the next step shortly.'}
+
+Best regards,
+${state.settings.firmName}`;
+}
+
+function renderTasks() {
+  const pending = state.tasks.filter(t => t.status !== 'Done');
+  const overdue = pending.filter(t => daysUntil(t.due) !== null && daysUntil(t.due) < 0);
+  const today = pending.filter(t => daysUntil(t.due) === 0);
+  const week = pending.filter(t => daysUntil(t.due) !== null && daysUntil(t.due) > 0 && daysUntil(t.due) <= 7);
+  const upcoming = pending.filter(t => daysUntil(t.due) === null || daysUntil(t.due) > 7);
+  q('tasks-overdue').innerHTML = taskListHtml(overdue) || '<div class="muted">None</div>';
+  q('tasks-today').innerHTML = taskListHtml(today) || '<div class="muted">None</div>';
+  q('tasks-week').innerHTML = taskListHtml(week) || '<div class="muted">None</div>';
+  q('tasks-upcoming').innerHTML = taskListHtml(upcoming) || '<div class="muted">None</div>';
+  q('overdue-count').textContent = overdue.length;
+}
+
+function renderFees() {
+  const total = state.invoices.reduce((s, inv) => s + Number(inv.amount || 0), 0);
+  const paid = state.invoices.reduce((s, inv) => s + Number(inv.paid || 0), 0);
+  const outstanding = Math.max(total - paid, 0);
+  const overdue = state.invoices.filter(inv => invoiceStatus(inv) === 'Overdue').reduce((s, inv) => s + Math.max(Number(inv.amount || 0) - Number(inv.paid || 0), 0), 0);
+  q('fees-stats').innerHTML = `
+    <div class="stat-card"><div class="stat-label">Total billed</div><div class="stat-value">${money(total)}</div></div>
+    <div class="stat-card"><div class="stat-label">Collected</div><div class="stat-value">${money(paid)}</div></div>
+    <div class="stat-card"><div class="stat-label">Outstanding</div><div class="stat-value">${money(outstanding)}</div></div>
+    <div class="stat-card"><div class="stat-label">Overdue</div><div class="stat-value">${money(overdue)}</div></div>`;
+  q('fees-table').innerHTML = state.invoices.map(inv => {
+    const m = matterById(inv.matterId) || {};
+    return `<tr onclick="openMatter('${esc(inv.matterId)}')"><td><strong>${esc(inv.ref)}</strong></td><td>${esc(m.ref || '-')}<br><span class="muted">${esc(m.title || '')}</span></td><td>${esc(m.client || '-')}</td><td>${money(inv.amount)}</td><td>${money(inv.paid)}</td><td>${esc(inv.due || '-')}</td><td>${statusBadge(invoiceStatus(inv))}</td></tr>`;
+  }).join('') || emptyRow(7, 'No invoices yet.');
+}
+
+function renderDocs() {
+  q('docs-table').innerHTML = state.documents.map(d => {
+    const m = matterById(d.matterId) || {};
+    return `<tr onclick="openMatter('${esc(d.matterId)}')"><td>${esc(d.name)}</td><td>${esc(m.ref || '-')} — ${esc(m.title || '')}</td><td>${esc(d.requiredBy || '-')}</td><td>${statusBadge(d.status)}</td><td>${esc(d.notes || '')}</td></tr>`;
+  }).join('') || emptyRow(5, 'No document requirements yet.');
+}
+
+function renderClients() {
+  const term = (q('client-search')?.value || '').toLowerCase();
+  const clients = state.clients.filter(c => [c.name,c.email,c.phone,c.identity,c.type,c.nationality].join(' ').toLowerCase().includes(term));
+  q('clients-table').innerHTML = clients.map(c => {
+    const active = state.matters.filter(m => m.client.toLowerCase() === c.name.toLowerCase() && m.status !== 'Closed').length;
+    return `<tr><td><strong>${esc(c.name)}</strong><br><span class="muted">${esc(c.address || '')}</span></td><td>${esc(c.type)}</td><td>${esc(c.email || '-')}</td><td>${esc(c.phone || '-')}</td><td>${esc(c.identity || '-')}</td><td>${active}</td></tr>`;
+  }).join('') || emptyRow(6, 'No clients found.');
+}
+
+function renderAdmin() {
+  q('set-firmName').value = state.settings.firmName || '';
+  q('set-email').value = state.settings.email || '';
+  q('set-phone').value = state.settings.phone || '';
+  q('set-whatsapp').value = state.settings.whatsapp || '';
+  q('set-address').value = state.settings.address || '';
+  q('admin-team').innerHTML = team.map(name => `
+    <div class="update-item"><div style="width:32px;height:32px;border-radius:50%;background:var(--bg3);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;flex-shrink:0">${esc(name.slice(0,2).toUpperCase())}</div><div><div style="font-size:13px;font-weight:600">${esc(name)}</div><div class="update-meta">Team member</div></div></div>
+  `).join('');
+}
+
+function openModal(id) {
+  populateSelects();
+  if (id === 'newInvoice') {
+    q('inv-issued').value = iso();
+    q('inv-due').value = addDays(7);
+    if (state.currentMatterId) q('inv-matter').value = state.currentMatterId;
+  }
+  if (id === 'newLead') {
+    q('lead-followup').value = addDays(1);
+    q('lead-conflict-result').innerHTML = '';
+  }
+  if (id === 'newMatter') {
+    q('m-deadline').value = addDays(7);
+    q('matter-conflict-result').innerHTML = '';
+  }
+  document.getElementById('modal-' + id).classList.add('open');
+}
+function closeModal(id) { document.getElementById('modal-' + id).classList.remove('open'); }
+
+function val(id) { return q(id)?.value?.trim() || ''; }
+function num(id) { return Number(q(id)?.value || 0); }
+
+function saveLead() {
+  const name = val('lead-name');
+  if (!name) return alert('Client / company name is required.');
+  const lead = {
+    id: uid('LEAD'), clientType: val('lead-clientType'), name, email: val('lead-email'), phone: val('lead-phone'),
+    nationality: val('lead-nationality'), identity: val('lead-identity'), area: val('lead-area'), forum: val('lead-forum'),
+    opponent: val('lead-opponent'), source: val('lead-source'), urgency: val('lead-urgency'), stage: val('lead-stage'),
+    followup: val('lead-followup'), assigned: val('lead-assigned'), desc: val('lead-desc'), notes: val('lead-notes'), createdAt: iso()
+  };
+  state.leads.unshift(lead);
+  saveState();
+  logActivity('New lead added: ' + lead.name, 'info');
+  closeModal('newLead');
+  render('leads');
+  toast('Lead saved.');
+}
+
+function saveMatter() {
+  const title = val('m-title');
+  const client = val('m-client');
+  if (!title || !client) return alert('Matter title and client are required.');
+  const m = {
+    id: uid('MAT'), ref: matterRef(), title, client, clientType: val('m-clientType'), email: val('m-email'), phone: val('m-phone'),
+    identity: val('m-identity'), area: val('m-area'), forum: val('m-forum'), caseNo: val('m-caseNo'), opponent: val('m-opponent'),
+    owner: val('m-owner'), status: 'Active', stage: val('m-stage') || 'New Enquiry', priority: val('m-priority'),
+    opened: iso(), deadline: val('m-deadline'), claimAmount: num('m-claim'), professionalFee: num('m-fee'), courtFee: num('m-courtFee'), paid: num('m-paid'),
+    desc: val('m-desc'), nextStep: val('m-next')
+  };
+  state.matters.unshift(m);
+  ensureClientFromMatter(m);
+  addDefaultDocuments(m.id, m.area, m.deadline);
+  state.tasks.unshift({ id: uid('TASK'), matterId:m.id, title:'Complete conflict check and engagement opening', due:addDays(1), priority:'High', owner:m.owner, status:'Pending' });
+  if (m.professionalFee || m.courtFee) {
+    state.invoices.unshift({ id: uid('INV'), ref: invRef(), matterId:m.id, amount:Number(m.professionalFee||0)+Number(m.courtFee||0), paid:Number(m.paid||0), issued:iso(), due:addDays(7), desc:'Professional fees and court/government fees estimate' });
+  }
+  saveState();
+  logActivity('New matter opened: ' + m.ref + ' — ' + m.title, 'success');
+  closeModal('newMatter');
+  openMatter(m.id);
+  toast('Matter opened.');
+}
+
+function ensureClientFromMatter(m) {
+  const exists = state.clients.some(c => c.name.toLowerCase() === m.client.toLowerCase());
+  if (!exists) {
+    state.clients.push({ id: uid('CLI'), type:m.clientType, name:m.client, email:m.email, phone:m.phone, nationality:'', identity:m.identity, address:'', notes:'Created from matter ' + m.ref });
+  }
+}
+
+function addDefaultDocuments(matterId, area, deadline) {
+  const docs = docTemplates[area] || ['Power of Attorney', 'Client ID', 'Relevant correspondence', 'Supporting evidence'];
+  docs.forEach(name => state.documents.push({ id:uid('DOC'), matterId, name, requiredBy:deadline || addDays(5), status:'Pending', notes:'' }));
+}
+
+function convertLead(id) {
+  const lead = state.leads.find(l => l.id === id);
+  if (!lead) return;
+  if (!confirm('Convert ' + lead.name + ' to a new matter?')) return;
+  const m = {
+    id: uid('MAT'), ref: matterRef(), title: lead.area + ' — ' + lead.name, client: lead.name, clientType: lead.clientType,
+    email: lead.email, phone: lead.phone, identity: lead.identity, area: lead.area, forum: lead.forum, caseNo:'', opponent: lead.opponent,
+    owner: lead.assigned || 'Omar', status:'Active', stage:'Engagement Letter', priority: lead.urgency, opened:iso(), deadline: lead.followup || addDays(7),
+    claimAmount:0, professionalFee:0, courtFee:0, paid:0, desc: lead.desc, nextStep:'Send engagement letter / quote and confirm documents.'
+  };
+  lead.stage = 'Retained';
+  state.matters.unshift(m);
+  ensureClientFromMatter(m);
+  addDefaultDocuments(m.id, m.area, m.deadline);
+  state.tasks.unshift({ id:uid('TASK'), matterId:m.id, title:'Prepare engagement letter and document request', due:addDays(1), priority:'High', owner:m.owner, status:'Pending' });
+  saveState();
+  logActivity('Lead converted to matter: ' + m.ref + ' — ' + m.client, 'success');
+  openMatter(m.id);
+  toast('Lead converted to matter.');
+}
+
+function saveClient() {
+  const name = val('c-name');
+  if (!name) return alert('Name is required.');
+  state.clients.push({ id:uid('CLI'), type:val('c-type'), name, email:val('c-email'), phone:val('c-phone'), nationality:val('c-nationality'), identity:val('c-identity'), address:val('c-address'), notes:val('c-notes') });
+  saveState();
+  logActivity('Client added: ' + name, 'info');
+  closeModal('newClient');
+  render('clients');
+  toast('Client saved.');
+}
+
+function saveInvoice() {
+  const matterId = val('inv-matter');
+  const amount = num('inv-amount');
+  if (!matterId || !amount) return alert('Matter and amount are required.');
+  const inv = { id:uid('INV'), ref:invRef(), matterId, amount, paid:num('inv-paid'), issued:val('inv-issued') || iso(), due:val('inv-due') || addDays(7), desc:val('inv-desc') };
+  state.invoices.unshift(inv);
+  saveState();
+  logActivity('Invoice issued: ' + inv.ref + ' / ' + money(amount), 'success');
+  closeModal('newInvoice');
+  render('fees');
+  if (state.currentMatterId === matterId) renderMatterDetail();
+  toast('Invoice saved.');
+}
+
+function openTaskModal() { openModal('addTask'); q('task-due').value = addDays(2); }
+function saveTask() {
+  const title = val('task-title');
+  if (!title) return alert('Task title is required.');
+  const task = { id:uid('TASK'), matterId:state.currentMatterId || '', title, due:val('task-due'), priority:val('task-priority'), owner:val('task-owner'), status:'Pending' };
+  state.tasks.unshift(task);
+  saveState();
+  logActivity('Task added: ' + title, 'info');
+  closeModal('addTask');
+  renderMatterDetail();
+  toast('Task added.');
+}
+function toggleTask(id, done) {
+  const t = state.tasks.find(x => x.id === id);
+  if (!t) return;
+  t.status = done ? 'Done' : 'Pending';
+  saveState();
+  if (q('page-matter-detail').classList.contains('active')) renderMatterDetail();
+  else render('tasks');
+}
+function deleteTask(id) {
+  if (!confirm('Delete this task?')) return;
+  state.tasks = state.tasks.filter(t => t.id !== id);
+  saveState();
+  renderMatterDetail();
+}
+
+function openUpdateModal() { openModal('addUpdate'); q('upd-title').value=''; q('upd-msg').value=''; q('upd-client-visible').checked=true; }
+function saveUpdate() {
+  const title = val('upd-title');
+  const msg = val('upd-msg');
+  if (!title || !msg) return alert('Title and message are required.');
+  state.updates.unshift({ id:uid('UPD'), matterId:state.currentMatterId, date:iso(), type:val('upd-type'), title, msg, clientVisible:q('upd-client-visible').checked });
+  saveState();
+  logActivity('Matter update posted: ' + title, 'info');
+  closeModal('addUpdate');
+  renderMatterDetail();
+  toast('Update posted.');
+}
+
+function openDocumentModal() { openModal('addDocument'); q('doc-date').value = addDays(3); }
+function saveDocument() {
+  const name = val('doc-name');
+  if (!name) return alert('Document name is required.');
+  state.documents.push({ id:uid('DOC'), matterId:state.currentMatterId, name, requiredBy:val('doc-date'), status:val('doc-status'), notes:val('doc-notes') });
+  saveState();
+  closeModal('addDocument');
+  renderMatterDetail();
+  toast('Document added.');
+}
+function toggleDoc(id, received) {
+  const d = state.documents.find(x => x.id === id);
+  if (!d) return;
+  d.status = received ? 'Received' : 'Pending';
+  saveState();
+  renderMatterDetail();
+}
+
+function saveMatterStatus() {
+  const m = matterById(state.currentMatterId);
+  if (!m) return;
+  m.stage = val('edit-stage');
+  m.status = val('edit-status');
+  m.owner = val('edit-owner');
+  m.deadline = val('edit-deadline');
+  saveState();
+  logActivity('Matter status updated: ' + m.ref + ' — ' + m.stage, 'info');
+  renderMatterDetail();
+  toast('Matter status saved.');
+}
+function saveMatterNarrative() {
+  const m = matterById(state.currentMatterId);
+  if (!m) return;
+  m.desc = val('edit-desc');
+  m.nextStep = val('edit-next');
+  saveState();
+  logActivity('Matter notes updated: ' + m.ref, 'info');
+  renderMatterDetail();
+  toast('Matter notes saved.');
+}
+function archiveMatter() {
+  const m = matterById(state.currentMatterId);
+  if (!m) return;
+  if (!confirm('Close/archive this matter?')) return;
+  m.status = 'Closed';
+  m.stage = 'Closed';
+  saveState();
+  logActivity('Matter closed: ' + m.ref, 'warn');
+  openMatter(m.id);
+}
+
+function switchTab(el, tabId) {
+  el.closest('.tabs').querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  qa('.tab-content').forEach(c => c.style.display = 'none');
+  q(tabId).style.display = 'block';
+}
+function switchTabById(tabId) {
+  qa('.tab').forEach(t => t.classList.toggle('active', t.getAttribute('onclick') && t.getAttribute('onclick').includes("'" + tabId + "'")));
+  qa('.tab-content').forEach(c => c.style.display = 'none');
+  const el = q(tabId);
+  if (el) el.style.display = 'block';
+}
+
+function conflictMatches(client, opponent, keywords) {
+  const terms = [client, opponent, keywords].filter(Boolean).map(s => s.toLowerCase());
+  if (!terms.length) return [];
+  const rows = [];
+  const test = (text) => terms.some(term => text.toLowerCase().includes(term));
+  state.clients.forEach(c => {
+    const text = [c.name,c.email,c.phone,c.identity,c.notes].join(' ');
+    if (test(text)) rows.push({ type:'Client', label:c.name, detail:[c.email,c.phone,c.identity].filter(Boolean).join(' / ') });
+  });
+  state.leads.forEach(l => {
+    const text = [l.name,l.email,l.phone,l.identity,l.opponent,l.area,l.desc,l.notes].join(' ');
+    if (test(text)) rows.push({ type:'Lead', label:l.name, detail:`${l.area} / Opponent: ${l.opponent || '-'}` });
+  });
+  state.matters.forEach(m => {
+    const text = [m.ref,m.title,m.client,m.opponent,m.email,m.phone,m.identity,m.caseNo,m.desc].join(' ');
+    if (test(text)) rows.push({ type:'Matter', label:`${m.ref} — ${m.title}`, detail:`Client: ${m.client} / Opponent: ${m.opponent || '-'}` });
+  });
+  return rows;
+}
+
+function conflictHtml(matches) {
+  if (!matches.length) return '<div class="notice success">No obvious matches found. Continue with formal review before opening the matter.</div>';
+  return `<div class="notice warn" style="margin-bottom:10px">${matches.length} possible match(es) found. Review before accepting the matter.</div>` + matches.map(r => `
+    <div class="update-item"><div class="update-dot warn"></div><div><div style="font-weight:600">${esc(r.type)} — ${esc(r.label)}</div><div class="update-meta">${esc(r.detail)}</div></div></div>
+  `).join('');
+}
+function runConflictFromLead() {
+  const matches = conflictMatches(val('lead-name'), val('lead-opponent'), [val('lead-email'),val('lead-phone'),val('lead-identity')].join(' '));
+  q('lead-conflict-result').innerHTML = conflictHtml(matches);
+}
+function runConflictFromMatter() {
+  const matches = conflictMatches(val('m-client'), val('m-opponent'), [val('m-email'),val('m-phone'),val('m-identity'),val('m-caseNo')].join(' '));
+  q('matter-conflict-result').innerHTML = conflictHtml(matches);
+}
+function runConflictPage(showDefault=true) {
+  if (!q('conf-results')) return;
+  const client = val('conf-client'), opponent = val('conf-opponent'), kw = val('conf-keywords');
+  if (!client && !opponent && !kw && showDefault === false) return;
+  q('conf-results').innerHTML = conflictHtml(conflictMatches(client, opponent, kw));
+}
+
+
+function getCalendarItems() {
+  const manual = (state.events || []).map(e => ({ ...e, source:'Manual' }));
+  const matterDates = state.matters
+    .filter(m => m.deadline && m.status !== 'Closed')
+    .map(m => ({ id:'MDL-' + m.id, matterId:m.id, type:'Matter deadline', title:m.stage + ' deadline', date:m.deadline, time:'', location:m.forum, status:'Scheduled', notes:m.nextStep || '', source:'Matter' }));
+  const taskDates = state.tasks
+    .filter(t => t.due && t.status !== 'Done')
+    .map(t => ({ id:'TDL-' + t.id, matterId:t.matterId, type:'Task deadline', title:t.title, date:t.due, time:'', location:matterById(t.matterId)?.forum || '', status:'Scheduled', notes:'Assigned to ' + (t.owner || '-'), source:'Task' }));
+  return [...manual, ...matterDates, ...taskDates].sort((a,b) => ((a.date || '') + (a.time || '')).localeCompare((b.date || '') + (b.time || '')));
+}
+
+function renderCalendar() {
+  const items = getCalendarItems();
+  const term = (q('calendar-search')?.value || '').toLowerCase();
+  const filtered = items.filter(e => {
+    const m = matterById(e.matterId) || {};
+    return [e.date,e.time,e.type,e.title,e.location,e.status,e.notes,m.ref,m.title,m.client,m.opponent].join(' ').toLowerCase().includes(term);
+  });
+  const next7 = items.filter(e => e.status !== 'Completed' && daysUntil(e.date) !== null && daysUntil(e.date) >= 0 && daysUntil(e.date) <= 7);
+  const overdue = items.filter(e => e.status !== 'Completed' && daysUntil(e.date) !== null && daysUntil(e.date) < 0);
+  const hearings = items.filter(e => (e.type || '').toLowerCase().includes('hearing') && e.status !== 'Completed').length;
+  q('calendar-stats').innerHTML = `
+    <div class="stat-card"><div class="stat-label">Upcoming 7 days</div><div class="stat-value">${next7.length}</div><div class="stat-sub">Hearings, tasks and deadlines</div></div>
+    <div class="stat-card"><div class="stat-label">Overdue dates</div><div class="stat-value">${overdue.length}</div><div class="stat-sub">Need review</div></div>
+    <div class="stat-card"><div class="stat-label">Open hearing dates</div><div class="stat-value">${hearings}</div><div class="stat-sub">Manual court events</div></div>
+    <div class="stat-card"><div class="stat-label">Total calendar items</div><div class="stat-value">${items.length}</div><div class="stat-sub">Manual + matter + task dates</div></div>`;
+  q('calendar-table').innerHTML = filtered.map(e => {
+    const m = matterById(e.matterId) || {};
+    const canDelete = e.source === 'Manual';
+    return `<tr>
+      <td><strong>${esc(e.date || '-')}</strong><br><span class="muted">${esc(e.time || '')} ${esc(dateHuman(e.date))}</span></td>
+      <td>${esc(e.type)}<br><span class="muted">${esc(e.source)}</span></td>
+      <td>${m.ref ? `<strong>${esc(m.ref)}</strong><br><span class="muted">${esc(m.client || '')}</span>` : '<span class="muted">No matter</span>'}</td>
+      <td>${esc(e.title || '-')}<br><span class="muted">${esc(e.notes || '')}</span></td>
+      <td>${esc(e.location || '-')}</td>
+      <td>${statusBadge(e.status || 'Scheduled')}</td>
+      <td>${canDelete ? `<button class="icon-btn" onclick="deleteEvent('${esc(e.id)}')"><i class="ti ti-trash"></i></button>` : ''}</td>
+    </tr>`;
+  }).join('') || emptyRow(7, 'No calendar items found.');
+  q('calendar-next7').innerHTML = next7.length ? next7.map(e => {
+    const m = matterById(e.matterId) || {};
+    return `<div class="update-item"><div class="update-dot warn"></div><div><div style="font-weight:600">${esc(e.title)}</div><div class="update-meta">${esc(e.date)} ${esc(e.time || '')} · ${esc(e.type)} · ${esc(m.ref || 'No matter')}</div></div></div>`;
+  }).join('') : '<div class="empty"><i class="ti ti-calendar-event"></i><p>No items in the next 7 days.</p></div>';
+}
+
+function openEventModal(id='') {
+  populateSelects();
+  q('event-id').value = '';
+  q('event-date').value = addDays(1);
+  q('event-time').value = '';
+  q('event-title').value = '';
+  q('event-location').value = '';
+  q('event-notes').value = '';
+  q('event-status').value = 'Scheduled';
+  q('event-type').value = 'Court hearing';
+  if (state.currentMatterId) q('event-matter').value = state.currentMatterId;
+  openModal('addEvent');
+}
+
+function saveEvent() {
+  const title = val('event-title');
+  const date = val('event-date');
+  if (!title || !date) return alert('Title and date are required.');
+  const event = {
+    id: uid('EVT'), matterId: val('event-matter'), type: val('event-type'), title, date,
+    time: val('event-time'), location: val('event-location'), status: val('event-status'), notes: val('event-notes')
+  };
+  if (!state.events) state.events = [];
+  state.events.unshift(event);
+  saveState();
+  logActivity('Calendar date added: ' + title + ' / ' + date, 'info');
+  closeModal('addEvent');
+  render('calendar');
+  toast('Calendar date saved.');
+}
+
+function deleteEvent(id) {
+  if (!confirm('Delete this calendar date?')) return;
+  state.events = (state.events || []).filter(e => e.id !== id);
+  saveState();
+  render('calendar');
+}
+
+function renderTemplates() {
+  const term = (q('template-search')?.value || '').toLowerCase();
+  const list = (state.templates || []).filter(t => [t.name,t.category,t.subject,t.body].join(' ').toLowerCase().includes(term));
+  q('templates-table').innerHTML = list.map(t => `
+    <tr>
+      <td><strong>${esc(t.name)}</strong><br><span class="muted">${esc(t.id)}</span></td>
+      <td>${esc(t.category)}</td>
+      <td>${esc(t.subject)}</td>
+      <td>${t.clientVisible ? statusBadge('Client visible') : statusBadge('Internal only')}</td>
+      <td style="white-space:nowrap">
+        <button class="btn" style="font-size:12px;padding:4px 10px" onclick="editTemplate('${esc(t.id)}')">Edit</button>
+        <button class="icon-btn" onclick="deleteTemplate('${esc(t.id)}')"><i class="ti ti-trash"></i></button>
+      </td>
+    </tr>`).join('') || emptyRow(5, 'No templates found.');
+}
+
+function openTemplateModal() {
+  q('template-id').value = '';
+  q('template-name').value = '';
+  q('template-category').value = 'General Update';
+  q('template-subject').value = 'Update regarding {matter_ref} — {matter_title}';
+  q('template-body').value = 'Dear {client},\\n\\nI hope you are doing well.\\n\\nWe would like to update you regarding your matter {matter_ref} — {matter_title}.\\n\\nCurrent stage: {stage}\\nNext deadline/date: {deadline}\\n\\nNext step:\\n{next_step}\\n\\nBest regards,\\n{firm}';
+  q('template-client-visible').checked = true;
+  openModal('addTemplate');
+}
+
+function editTemplate(id) {
+  const t = (state.templates || []).find(x => x.id === id);
+  if (!t) return;
+  q('template-id').value = t.id;
+  q('template-name').value = t.name;
+  q('template-category').value = t.category;
+  q('template-subject').value = t.subject;
+  q('template-body').value = t.body;
+  q('template-client-visible').checked = !!t.clientVisible;
+  openModal('addTemplate');
+}
+
+function saveTemplate() {
+  const name = val('template-name');
+  const subject = val('template-subject');
+  const body = val('template-body');
+  if (!name || !subject || !body) return alert('Name, subject and body are required.');
+  if (!state.templates) state.templates = [];
+  const id = val('template-id') || uid('TPL');
+  const template = { id, name, category: val('template-category'), subject, body, clientVisible: q('template-client-visible').checked };
+  const idx = state.templates.findIndex(t => t.id === id);
+  if (idx >= 0) state.templates[idx] = template; else state.templates.unshift(template);
+  saveState();
+  logActivity('Template saved: ' + name, 'info');
+  closeModal('addTemplate');
+  render('templates');
+  toast('Template saved.');
+}
+
+function deleteTemplate(id) {
+  if (!confirm('Delete this template?')) return;
+  state.templates = (state.templates || []).filter(t => t.id !== id);
+  saveState();
+  render('templates');
+}
+
+function renderTemplate(template, matter) {
+  if (!template || !matter) return { subject:'', body:'' };
+  const map = {
+    client: matter.client || '',
+    matter_ref: matter.ref || '',
+    matter_title: matter.title || '',
+    stage: matter.stage || '',
+    deadline: matter.deadline || 'To be confirmed',
+    next_step: matter.nextStep || '',
+    forum: matter.forum || '',
+    firm: state.settings.firmName || 'OS Legal',
+    owner: matter.owner || ''
+  };
+  const fill = (text) => String(text || '').replace(/\{([a-z_]+)\}/g, (_, key) => map[key] ?? '');
+  return { subject: fill(template.subject), body: fill(template.body) };
+}
+
+function openComposeEmailModal(matterId='') {
+  populateSelects();
+  openModal('composeEmail');
+  if (matterId) q('email-matter').value = matterId;
+  else if (state.currentMatterId) q('email-matter').value = state.currentMatterId;
+  refreshEmailTemplatePreview();
+}
+
+function refreshEmailTemplatePreview() {
+  const matter = matterById(val('email-matter')) || state.matters[0];
+  const template = (state.templates || [])[0] && ((state.templates || []).find(t => t.id === val('email-template')) || state.templates[0]);
+  if (!matter || !template) return;
+  const rendered = renderTemplate(template, matter);
+  q('email-to').value = matter.email || '';
+  q('email-subject').value = rendered.subject;
+  q('email-body').value = rendered.body;
+}
+
+function copyComposedEmail() {
+  const text = 'Subject: ' + val('email-subject') + '\\n\\n' + val('email-body');
+  navigator.clipboard.writeText(text).then(() => toast('Email copied.'));
+}
+
+function mailtoUrl(to, subject, body) {
+  return 'mailto:' + encodeURIComponent(to || '') + '?subject=' + encodeURIComponent(subject || '') + '&body=' + encodeURIComponent(body || '');
+}
+
+function openComposedEmailClient() {
+  const to = val('email-to');
+  const subject = val('email-subject');
+  const body = val('email-body');
+  if (!to || !subject || !body) return alert('To, subject and body are required.');
+  window.location.href = mailtoUrl(to, subject, body);
+}
+
+function queueComposedEmail() {
+  const matterId = val('email-matter');
+  const to = val('email-to');
+  const subject = val('email-subject');
+  const body = val('email-body');
+  if (!matterId || !to || !subject || !body) return alert('Matter, to, subject and body are required.');
+  if (!state.emailQueue) state.emailQueue = [];
+  const email = { id:uid('EML'), matterId, to, subject, body, status:'Draft', createdAt:iso(), sentAt:'' };
+  state.emailQueue.unshift(email);
+  if (q('email-log-update').checked) {
+    state.updates.unshift({ id:uid('UPD'), matterId, date:iso(), type:'General update', title:subject, msg:body.split('\\n').slice(0,4).join(' '), clientVisible:true });
+  }
+  saveState();
+  logActivity('Email update queued: ' + subject, 'info');
+  closeModal('composeEmail');
+  render('emails');
+  toast('Email queued.');
+}
+
+function renderEmails() {
+  const queue = state.emailQueue || [];
+  const drafts = queue.filter(e => e.status !== 'Sent').length;
+  const sent = queue.filter(e => e.status === 'Sent').length;
+  q('email-stats').innerHTML = `
+    <div class="stat-card"><div class="stat-label">Draft / queued</div><div class="stat-value">${drafts}</div><div class="stat-sub">Need review/send</div></div>
+    <div class="stat-card"><div class="stat-label">Sent</div><div class="stat-value">${sent}</div><div class="stat-sub">Marked sent in app</div></div>
+    <div class="stat-card"><div class="stat-label">Templates</div><div class="stat-value">${(state.templates || []).length}</div><div class="stat-sub">Admin-managed</div></div>
+    <div class="stat-card"><div class="stat-label">Auto-send status</div><div class="stat-value" style="font-size:20px">Backend needed</div><div class="stat-sub">Secure email API required</div></div>`;
+  q('emails-table').innerHTML = queue.map(e => {
+    const m = matterById(e.matterId) || {};
+    return `<tr>
+      <td>${esc(e.createdAt || '-')}</td>
+      <td>${esc(e.to)}</td>
+      <td>${esc(m.ref || '-')}<br><span class="muted">${esc(m.client || '')}</span></td>
+      <td>${esc(e.subject)}<br><span class="muted">${esc((e.body || '').slice(0,90))}${(e.body || '').length > 90 ? '...' : ''}</span></td>
+      <td>${statusBadge(e.status)}</td>
+      <td style="white-space:nowrap">
+        <button class="btn" style="font-size:12px;padding:4px 10px" onclick="openQueuedEmail('${esc(e.id)}')">Open</button>
+        ${e.status !== 'Sent' ? `<button class="btn" style="font-size:12px;padding:4px 10px" onclick="markEmailSent('${esc(e.id)}')">Mark sent</button>` : ''}
+        <button class="icon-btn" onclick="deleteQueuedEmail('${esc(e.id)}')"><i class="ti ti-trash"></i></button>
+      </td>
+    </tr>`;
+  }).join('') || emptyRow(6, 'No email updates queued.');
+  q('email-workflow').innerHTML = `
+    <div class="task-item"><input type="checkbox" class="task-check" checked disabled/><div class="task-info"><div class="task-title">Create/update admin templates</div><div class="task-meta">Templates page</div></div></div>
+    <div class="task-item"><input type="checkbox" class="task-check" checked disabled/><div class="task-info"><div class="task-title">Generate matter email using variables</div><div class="task-meta">Email queue / matter communication tab</div></div></div>
+    <div class="task-item"><input type="checkbox" class="task-check" disabled/><div class="task-info"><div class="task-title">Connect secure backend email sender</div><div class="task-meta">Required for true automatic sending</div></div></div>`;
+}
+
+function openQueuedEmail(id) {
+  const e = (state.emailQueue || []).find(x => x.id === id);
+  if (!e) return;
+  window.location.href = mailtoUrl(e.to, e.subject, e.body);
+}
+
+function markEmailSent(id) {
+  const e = (state.emailQueue || []).find(x => x.id === id);
+  if (!e) return;
+  e.status = 'Sent';
+  e.sentAt = iso();
+  saveState();
+  render('emails');
+  toast('Email marked sent.');
+}
+
+function deleteQueuedEmail(id) {
+  if (!confirm('Delete this queued email?')) return;
+  state.emailQueue = (state.emailQueue || []).filter(e => e.id !== id);
+  saveState();
+  render('emails');
+}
+
+
+function saveSettings() {
+  state.settings.firmName = val('set-firmName');
+  state.settings.email = val('set-email');
+  state.settings.phone = val('set-phone');
+  state.settings.whatsapp = val('set-whatsapp').replace(/[^\d]/g,'');
+  state.settings.address = val('set-address');
+  saveState();
+  toast('Settings saved.');
+}
+
+function exportBackup() {
+  const blob = new Blob([JSON.stringify(state, null, 2)], { type:'application/json' });
+  downloadBlob(blob, 'os-legal-backup-' + iso() + '.json');
+}
+function importBackup(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    try {
+      const data = JSON.parse(reader.result);
+      if (!data.matters || !data.leads) throw new Error('Invalid backup file');
+      state = data;
+      saveState();
+      render('dashboard');
+      toast('Backup imported.');
+    } catch (e) {
+      alert('Could not import backup: ' + e.message);
+    }
+  };
+  reader.readAsText(file);
+}
+function resetDemoData() {
+  if (!confirm('Reset all local data and reload demo data?')) return;
+  state = seedData();
+  saveState();
+  render('dashboard');
+  toast('Demo data reset.');
+}
+
+function exportCsv(kind) {
+  let rows = [];
+  if (kind === 'leads') {
+    rows = [['ID','Name','Type','Email','Phone','Area','Forum','Opponent','Stage','Follow-up','Assigned'], ...state.leads.map(l => [l.id,l.name,l.clientType,l.email,l.phone,l.area,l.forum,l.opponent,l.stage,l.followup,l.assigned])];
+  }
+  if (kind === 'matters') {
+    rows = [['Ref','Title','Client','Opponent','Area','Forum','Case No','Owner','Status','Stage','Deadline','Claim Amount','Professional Fee','Court Fee','Paid'], ...state.matters.map(m => [m.ref,m.title,m.client,m.opponent,m.area,m.forum,m.caseNo,m.owner,m.status,m.stage,m.deadline,m.claimAmount,m.professionalFee,m.courtFee,m.paid])];
+  }
+  if (kind === 'documents') {
+    rows = [['Document','Matter','Required By','Status','Notes'], ...state.documents.map(d => [d.name, matterById(d.matterId)?.ref || '', d.requiredBy, d.status, d.notes])];
+  }
+  const csv = rows.map(row => row.map(cell => '"' + String(cell ?? '').replace(/"/g,'""') + '"').join(',')).join('\n');
+  downloadBlob(new Blob([csv], { type:'text/csv;charset=utf-8;' }), 'os-legal-' + kind + '-' + iso() + '.csv');
+}
+function downloadBlob(blob, filename) {
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = filename; a.click();
+  URL.revokeObjectURL(url);
+}
+
+function copyClientTemplate() {
+  const text = q('client-template').innerText;
+  navigator.clipboard.writeText(text).then(() => toast('Template copied.'));
+}
+function printMatterSummary() {
+  const m = matterById(state.currentMatterId);
+  if (!m) return;
+  const w = window.open('', '_blank');
+  w.document.write(`<html><head><title>${esc(m.ref)}</title><style>body{font-family:Arial;padding:30px;line-height:1.6} h1{font-size:24px} table{border-collapse:collapse;width:100%}td{border:1px solid #ddd;padding:8px}</style>
+<link rel="manifest" href="./manifest.webmanifest"/>
+<meta name="theme-color" content="#1a1a18"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="apple-mobile-web-app-title" content="OS Legal CRM"/>
+<link rel="apple-touch-icon" href="./icons/icon-192.png"/>
+
+</head><body>
+    <h1>${esc(m.ref)} — ${esc(m.title)}</h1>
+    <table>
+      <tr><td>Client</td><td>${esc(m.client)}</td></tr>
+      <tr><td>Opponent</td><td>${esc(m.opponent)}</td></tr>
+      <tr><td>Forum</td><td>${esc(m.forum)}</td></tr>
+      <tr><td>Stage</td><td>${esc(m.stage)}</td></tr>
+      <tr><td>Deadline</td><td>${esc(m.deadline || '-')}</td></tr>
+      <tr><td>Next step</td><td>${esc(m.nextStep || '-')}</td></tr>
+    </table>
+    <h2>Facts</h2><p>${esc(m.desc || '')}</p>
+    <h2>Tasks</h2><ul>${tasksForMatter(m.id).map(t=>`<li>${esc(t.title)} — ${esc(t.status)} — ${esc(t.due || '-')}</li>`).join('')}</ul>
+    <h2>Documents</h2><ul>${docsForMatter(m.id).map(d=>`<li>${esc(d.name)} — ${esc(d.status)}</li>`).join('')}</ul>
+  
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function () {
+    navigator.serviceWorker.register('./sw.js').catch(function (error) {
+      console.warn('Service worker registration failed:', error);
+    });
+  });
+}
+</script>
+
+</body></html>`);
+  w.document.close();
+  w.print();
+}
+
+qa('.modal-overlay').forEach(o => o.addEventListener('click', e => { if (e.target === o) o.classList.remove('open'); }));
+
+migrateState();
+populateSelects();
+render('dashboard');
+saveState();
+</script>
+
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function () {
+    navigator.serviceWorker.register('./sw.js').catch(function (error) {
+      console.warn('Service worker registration failed:', error);
+    });
+  });
+}
+</script>
+
+</body>
+</html>
